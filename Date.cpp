@@ -111,14 +111,10 @@ public:
 	virtual ~Date() {}
 };
 
-class WesternWeekDays : public Date {
+class WesternDate : public Date {
 
 protected:
 	std::string WEEK_DAYS[8];
-
-	void init() {
-		populate_week_days();
-	}
 
 	void populate_week_days(){
 		WEEK_DAYS[1] = "Sunday";
@@ -130,8 +126,8 @@ protected:
 		WEEK_DAYS[7] = "Saturday";
 	}
 
-	WesternWeekDays() : Date() {
-		init();
+	WesternDate() : Date() {
+		populate_week_days();
 	}
 	
 	virtual void refresh_cache() = 0;
@@ -148,14 +144,14 @@ public:
 	}
 };
 
-class Gregorian : public WesternWeekDays {
+class Gregorian : public WesternDate {
 
 public:
 
-	Gregorian() : WesternWeekDays() {}
+	Gregorian() : WesternDate() {}
 	
 	Gregorian(int year, int month, int day) {
-		init();
+		populate_week_days();
 
 		time_t rawtime = time(&rawtime);
 		struct tm* given_date = localtime(&rawtime);
@@ -178,10 +174,10 @@ public:
 		
 };
 
-class Julian : public WesternWeekDays {
+class Julian : public WesternDate {
 
 public:
-	Julian() : WesternWeekDays() {}
+	Julian() : WesternDate() {}
 	
 	void refresh_cache() {}	
 };
