@@ -14,25 +14,32 @@ class Date {
 protected:
 	int cache[CACHE_SIZE];
 	virtual void refresh_cache() = 0;
-
-private:
-	// Store dates as UNIX timestamps
-	time_t timestamp;
-
 	void clear_cache() {
 		for(int i = 0; i < CACHE_SIZE; i++){
 			cache[i] = 0;
 		}
 	}
 
-public:
-	// Default constructor sets date to today
-	Date() : timestamp( time(&timestamp) ) {
+	std::string WEEK_DAYS[8];
+	virtual void populate_week_days() = 0;
+	
+	virtual void init() {
+		std::cout << "Date init" << std::endl;
 		clear_cache();
 	}
 
+private:
+	// Store dates as UNIX timestamps
+	time_t timestamp;
+
+public:
+	// Default constructor sets date to today
+	Date() : timestamp( time(&timestamp) ) {
+		this->init();
+	}
+
 	Date(time_t t) : timestamp(t) {
-		clear_cache();
+		this->init();
 	}
 
 	// Return unix timestamp of this Date
@@ -94,7 +101,15 @@ public:
 		}
 	}
 
-	virtual std::string week_day_name() = 0;
+	std::string week_day_name(){
+		if(cache[WEEK_DAY]) {
+			return WEEK_DAYS[cache[WEEK_DAY]];
+		}
+		else {
+			refresh_cache();
+			return WEEK_DAYS[cache[WEEK_DAY]];
+		}
+	}
 
 	int operator -(const Date& other) const {
 		time_t difference = timestamp - other.get_unix_timestamp();
@@ -113,8 +128,12 @@ public:
 
 class WesternDate : public Date {
 
-private:
-	std::string WEEK_DAYS[8];
+protected:
+	void init(){
+		std::cout << "WesternDate init" << std::endl;
+		populate_week_days();
+	}
+
 	void populate_week_days(){
 		WEEK_DAYS[1] = "Sunday";
 		WEEK_DAYS[2] = "Monday";
@@ -125,26 +144,8 @@ private:
 		WEEK_DAYS[7] = "Saturday";
 	}
 
-protected:
-	void init() {
-		populate_week_days();
-	}
-
 	WesternDate() : Date() {
-		init();
-	}
-	
-	virtual void refresh_cache() = 0;
-	
-public:
-	std::string week_day_name(){
-		if(cache[WEEK_DAY]) {
-			return WEEK_DAYS[cache[WEEK_DAY]];
-		}
-		else {
-			refresh_cache();
-			return WEEK_DAYS[cache[WEEK_DAY]];
-		}
+		this->init();
 	}
 };
 
@@ -154,8 +155,6 @@ public:
 	Gregorian() : WesternDate() {}
 	
 	Gregorian(int year, int month, int day) {
-		init();
-
 		time_t rawtime = time(&rawtime);
 		struct tm* given_date = localtime(&rawtime);
 		given_date->tm_year = year - 1900;
@@ -200,7 +199,7 @@ public:
 };
 
 int main(){
-	Gregorian gtoday;
+	Gregorian gtoday = Gregorian(2011,10,10);
 	std::cout << "Gregorian: " << gtoday << std::endl;
 	Julian jtoday;
 	std::cout << "Julian: " << jtoday << std::endl;
