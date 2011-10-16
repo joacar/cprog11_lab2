@@ -46,6 +46,14 @@ public:
 		return *this;
 	}
 
+	float julian_day() const {
+		return ( timestamp / 86400 ) + 2440587.5;
+	}
+	
+	int mod_julian_day() const {
+		return julian_day() - 2400000.5;
+	} 
+
 	int year() {
 		if(cache[YEAR]) {
 			return cache[YEAR];
@@ -94,15 +102,18 @@ public:
 	}
 
 	friend std::ostream & operator<<(std::ostream & os, Date& date) {
-		return os << date.year() << "-" << date.month() << "-" << date.day() << ": " << date.week_day_name();
+		os << date.year() << "-" << date.month() << "-" << date.day();
+		os << " (" << date.week_day_name() << ")";
+		os << " MJD: " << date.mod_julian_day();
+		return os;
 	}
 
 	virtual ~Date() {}
 };
 
-class Gregorian : public Date {
+class WesternWeekDays : public Date {
 
-private:
+protected:
 	std::string WEEK_DAYS[8];
 
 	void populate_week_days(){
@@ -115,11 +126,29 @@ private:
 		WEEK_DAYS[7] = "Saturday";
 	}
 
-public:
-
-	Gregorian() : Date() {
+	WesternWeekDays() : Date() {
 		populate_week_days();
 	}
+	
+	virtual void refresh_cache() = 0;
+	
+public:
+	std::string week_day_name(){
+		if(cache[WEEK_DAY]) {
+			return WEEK_DAYS[cache[WEEK_DAY]];
+		}
+		else {
+			refresh_cache();
+			return WEEK_DAYS[cache[WEEK_DAY]];
+		}
+	}
+};
+
+class Gregorian : public WesternWeekDays {
+
+public:
+
+	Gregorian() : WesternWeekDays() {}
 	
 	Gregorian(int year, int month, int day) {
 		populate_week_days();
@@ -131,16 +160,6 @@ public:
 		given_date->tm_mday = day;
 
 		set_unix_timestamp(mktime(given_date));
-	}
-
-	std::string week_day_name(){
-		if(cache[WEEK_DAY]) {
-			return WEEK_DAYS[cache[WEEK_DAY]];
-		}
-		else {
-			refresh_cache();
-			return WEEK_DAYS[cache[WEEK_DAY]];
-		}
 	}
 
 	void refresh_cache(){
@@ -155,21 +174,17 @@ public:
 		
 };
 
-class Julian : public Date {
+class Julian : public WesternWeekDays {
 
 public:
-	Julian() : Date() {}
+	Julian() : WesternWeekDays() {}
 	
 	void refresh_cache() {}	
-
-	std::string week_day_name(){
-		return "Tuesday";
-	}
 };
 
 int main(){
 	Gregorian today;
-	Gregorian my_birthday = Gregorian(1995,06,20);		
+	Gregorian my_birthday = Gregorian(1988,12,16);		
 	std::cout << today - my_birthday << " days ago, you were born on " << my_birthday << std::endl;
 	return 0;
 }
