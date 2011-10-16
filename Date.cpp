@@ -111,7 +111,7 @@ public:
 	virtual ~Date() {}
 };
 
-class WesternWeekDays : public Date {
+class WesternDate : public Date {
 
 protected:
 	std::string WEEK_DAYS[8];
@@ -126,7 +126,7 @@ protected:
 		WEEK_DAYS[7] = "Saturday";
 	}
 
-	WesternWeekDays() : Date() {
+	WesternDate() : Date() {
 		populate_week_days();
 	}
 	
@@ -144,11 +144,11 @@ public:
 	}
 };
 
-class Gregorian : public WesternWeekDays {
+class Gregorian : public WesternDate {
 
 public:
 
-	Gregorian() : WesternWeekDays() {}
+	Gregorian() : WesternDate() {}
 	
 	Gregorian(int year, int month, int day) {
 		populate_week_days();
@@ -174,10 +174,10 @@ public:
 		
 };
 
-class Julian : public WesternWeekDays {
+class Julian : public WesternDate {
 
 public:
-	Julian() : WesternWeekDays() {}
+	Julian() : WesternDate() {}
 	
 	void refresh_cache() {}	
 };
