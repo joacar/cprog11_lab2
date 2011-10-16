@@ -112,6 +112,7 @@ public:
 };
 
 class WesternDate : public Date {
+
 private:
 	std::string WEEK_DAYS[8];
 	void populate_week_days(){
@@ -150,7 +151,6 @@ public:
 class Gregorian : public WesternDate {
 
 public:
-
 	Gregorian() : WesternDate() {}
 	
 	Gregorian(int year, int month, int day) {
@@ -181,13 +181,28 @@ class Julian : public WesternDate {
 
 public:
 	Julian() : WesternDate() {}
+
+	// Julian(int year, int month, int day){}
 	
-	void refresh_cache() {}	
+	// cf http://quasar.as.utexas.edu/BillInfo/JulianDatesG.html
+	void refresh_cache() {
+		float a = julian_day();
+		int b = a + 1524;
+		int c = (int)((b-122.1)/365.25);
+		int d = (int)365.25*c;
+		int e = (int)((b-d)/30.6001);
+		int f = (int)(30.6001*e);
+		
+		cache[DAY] = (int) b-d-f+1;
+		cache[MONTH] = (int) e-1;
+		cache[YEAR] = (int) c-4716; 
+	}	
 };
 
 int main(){
-	Gregorian today;
-	Gregorian my_birthday = Gregorian(1988,12,16);		
-	std::cout << today - my_birthday << " days ago, you were born on " << my_birthday << std::endl;
+	Gregorian gtoday;
+	std::cout << "Gregorian: " << gtoday << std::endl;
+	Julian jtoday;
+	std::cout << "Julian: " << jtoday << std::endl;
 	return 0;
 }
