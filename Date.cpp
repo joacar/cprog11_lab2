@@ -29,5 +29,7 @@ public:
 
 int main(){
 	Date today = Date();
+	cout << "Today's date is: " << today << endl;
+	Date tomorrow = Date()
 	return 0;
 }
