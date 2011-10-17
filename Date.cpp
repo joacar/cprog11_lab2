@@ -1,6 +1,7 @@
 #include <time.h>
 #include <iostream>
 #include <string>
+#include <math.h>
 
 #define CACHE_SIZE 4
 
@@ -24,8 +25,7 @@ protected:
 	std::string* WEEK_DAYS;
 	virtual void populate_week_days() = 0;
 	
-	virtual void init() {
-		std::cout << "Date init" << std::endl;
+	void init() {
 		clear_cache();
 	}
 
@@ -131,7 +131,6 @@ class WesternDate : public Date {
 
 protected:
 	void init(){
-		std::cout << "WesternDate init" << std::endl;
 		populate_week_days();
 	}
 
@@ -151,7 +150,6 @@ protected:
 	}
 
 	virtual ~WesternDate(){
-		std::cout << "WesternDate destroyed" << std::endl;
 		delete [] WEEK_DAYS;
 	}
 };
@@ -188,21 +186,27 @@ class Julian : public WesternDate {
 public:
 	Julian() : WesternDate() {}
 
-	// Julian(int year, int month, int day){}
+	Julian(int year, int month, int day){}
 	
-	// cf http://quasar.as.utexas.edu/BillInfo/JulianDatesG.html
+	// Julian day number -> Julian date
+	// from http://mysite.verizon.net/aesir_research/date/injdalg2.htm
 	void refresh_cache() {
-		float a = julian_day();
-		int b = a + 1524;
-		int c = (int)((b-122.1)/365.25);
-		int d = (int)365.25*c;
-		int e = (int)((b-d)/30.6001);
-		int f = (int)(30.6001*e);
-		
-		cache[DAY] = (int) b-d-f+1;
-		cache[MONTH] = (int) e-1;
-		cache[YEAR] = (int) c-4716;
-		cache[WEEK_DAY] = 3; 
+		float jd = julian_day();
+		int z = (int) floor(jd - 1721116.5);
+		float r = (jd - 1721116.5) - z;
+		int y = (int) floor((z-0.25)/365.25);
+		int c = (int) (z - floor(365.25*y));
+		int m = (5*c + 456)/153;
+		int f = (153*m-457)/5;
+
+		cache[DAY] = c - f + r;
+		if (m > 12) {
+			y = y + 1;
+			m = m - 12;
+		}
+		cache[YEAR] = y;
+		cache[MONTH] = m;
+		cache[WEEK_DAY] = 1; // <-- TODO FIX THIS
 	}	
 };
 
