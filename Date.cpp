@@ -4,6 +4,7 @@
 
 #define CACHE_SIZE 4
 
+#define EMPTY -1
 #define YEAR 0
 #define MONTH 1
 #define DAY 2
@@ -16,11 +17,11 @@ protected:
 	virtual void refresh_cache() = 0;
 	void clear_cache() {
 		for(int i = 0; i < CACHE_SIZE; i++){
-			cache[i] = 0;
+			cache[i] = EMPTY;
 		}
 	}
 
-	std::string WEEK_DAYS[8];
+	std::string* WEEK_DAYS;
 	virtual void populate_week_days() = 0;
 	
 	virtual void init() {
@@ -62,7 +63,7 @@ public:
 	} 
 
 	int year() {
-		if(cache[YEAR]) {
+		if(cache[YEAR] != EMPTY) {
 			return cache[YEAR];
 		}
 		else {
@@ -72,7 +73,7 @@ public:
 	}
 
 	int month() {
-		if(cache[MONTH]) {
+		if(cache[MONTH] != EMPTY) {
 			return cache[MONTH];
 		}
 		else {
@@ -82,7 +83,7 @@ public:
 	}
 
 	int day() {
-		if(cache[DAY]) {
+		if(cache[DAY] != EMPTY) {
 			return cache[DAY];
 		}
 		else {
@@ -92,7 +93,7 @@ public:
 	}	
 	
 	int week_day() {
-		if(cache[WEEK_DAY]) {
+		if(cache[WEEK_DAY] != EMPTY) {
 			return cache[WEEK_DAY];
 		}
 		else {
@@ -102,7 +103,7 @@ public:
 	}
 
 	std::string week_day_name(){
-		if(cache[WEEK_DAY]) {
+		if(cache[WEEK_DAY] != EMPTY) {
 			return WEEK_DAYS[cache[WEEK_DAY]];
 		}
 		else {
@@ -134,18 +135,24 @@ protected:
 		populate_week_days();
 	}
 
-	void populate_week_days(){
-		WEEK_DAYS[1] = "Sunday";
-		WEEK_DAYS[2] = "Monday";
-		WEEK_DAYS[3] = "Tuesday";
-		WEEK_DAYS[4] = "Wednesday";
-		WEEK_DAYS[5] = "Thursday";
-		WEEK_DAYS[6] = "Friday";
-		WEEK_DAYS[7] = "Saturday";
-	}
-
 	WesternDate() : Date() {
 		this->init();
+	}
+
+	void populate_week_days(){
+		WEEK_DAYS = new std::string[7];
+		WEEK_DAYS[0] = "Sunday";
+		WEEK_DAYS[1] = "Monday";
+		WEEK_DAYS[2] = "Tuesday";
+		WEEK_DAYS[3] = "Wednesday";
+		WEEK_DAYS[4] = "Thursday";
+		WEEK_DAYS[5] = "Friday";
+		WEEK_DAYS[6] = "Saturday";
+	}
+
+	virtual ~WesternDate(){
+		std::cout << "WesternDate destroyed" << std::endl;
+		delete [] WEEK_DAYS;
 	}
 };
 
@@ -171,7 +178,7 @@ public:
 		cache[YEAR] = t->tm_year + 1900;
 		cache[MONTH] = t->tm_mon + 1;
 		cache[DAY] = t->tm_mday;
-		cache[WEEK_DAY] = t->tm_wday + 1;
+		cache[WEEK_DAY] = t->tm_wday;
 	}	
 		
 };
@@ -194,12 +201,13 @@ public:
 		
 		cache[DAY] = (int) b-d-f+1;
 		cache[MONTH] = (int) e-1;
-		cache[YEAR] = (int) c-4716; 
+		cache[YEAR] = (int) c-4716;
+		cache[WEEK_DAY] = 3; 
 	}	
 };
 
 int main(){
-	Gregorian gtoday = Gregorian(2011,10,10);
+	Gregorian gtoday;
 	std::cout << "Gregorian: " << gtoday << std::endl;
 	Julian jtoday;
 	std::cout << "Julian: " << jtoday << std::endl;
