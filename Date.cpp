@@ -57,6 +57,11 @@ public:
 	float julian_day() const {
 		return ( timestamp / 86400 ) + 2440587.5;
 	}
+
+	Date& set_julian_day(float jd) {
+		int ts = (int) ((jd - 2440587.5) * 86400);
+		return set_unix_timestamp(ts);
+	}
 	
 	int mod_julian_day() const {
 		return julian_day() - 2400000.5;
@@ -186,7 +191,14 @@ class Julian : public WesternDate {
 public:
 	Julian() : WesternDate() {}
 
-	Julian(int year, int month, int day){}
+	Julian(int year, int month, int day){
+		if (month < 3) {
+			month = month + 12;
+			year = year - 1;
+		}
+		float julian_day = day + (153*month-457)/5 + 365*year + year/4 + 1721116.5;
+		set_julian_day(julian_day);
+	}
 	
 	// Julian day number -> Julian date
 	// from http://mysite.verizon.net/aesir_research/date/injdalg2.htm
@@ -215,5 +227,12 @@ int main(){
 	std::cout << "Gregorian: " << gtoday << std::endl;
 	Julian jtoday;
 	std::cout << "Julian: " << jtoday << std::endl;
+
+	std::cout << "I was born on: " << std::endl;	
+	Gregorian gbirthday = Gregorian(1988,12,16);
+	std::cout << gbirthday << std::endl;
+	Julian jbirthday = Julian(1988,12,16);
+	std::cout << jbirthday << std::endl;
+		
 	return 0;
 }
