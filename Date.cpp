@@ -191,6 +191,8 @@ class Julian : public WesternDate {
 public:
 	Julian() : WesternDate() {}
 
+	// Julian date -> Julian Day Number -> timestamp
+	// from http://mysite.verizon.net/aesir_research/date/date0.htm
 	Julian(int year, int month, int day){
 		if (month < 3) {
 			month = month + 12;
@@ -201,7 +203,7 @@ public:
 	}
 	
 	// Julian day number -> Julian date
-	// from http://mysite.verizon.net/aesir_research/date/injdalg2.htm
+	// from http://mysite.verizon.net/aesir_research/date/date0.htm
 	void refresh_cache() {
 		float jd = julian_day();
 		int z = (int) floor(jd - 1721116.5);
