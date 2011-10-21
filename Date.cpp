@@ -16,8 +16,49 @@
 class Date {
 
 protected:
+	static int days_in_sec = 
+		{
+			DAY_IN_SECONDS*1,
+			DAY_IN_SECONDS*2,
+			DAY_IN_SECONDS*3,
+			DAY_IN_SECONDS*4,
+			DAY_IN_SECONDS*5,
+			DAY_IN_SECONDS*6,
+			DAY_IN_SECONDS*7,
+			DAY_IN_SECONDS*8,
+			DAY_IN_SECONDS*9,
+			DAY_IN_SECONDS*10,
+			DAY_IN_SECONDS*11,
+			DAY_IN_SECONDS*12,
+			DAY_IN_SECONDS*13,
+			DAY_IN_SECONDS*14,
+			DAY_IN_SECONDS*15,
+			DAY_IN_SECONDS*16,
+			DAY_IN_SECONDS*17,
+			DAY_IN_SECONDS*18,
+			DAY_IN_SECONDS*19,
+			DAY_IN_SECONDS*20,
+			DAY_IN_SECONDS*21,
+			DAY_IN_SECONDS*22,
+			DAY_IN_SECONDS*23,
+			DAY_IN_SECONDS*24,
+			DAY_IN_SECONDS*25,
+			DAY_IN_SECONDS*26,
+			DAY_IN_SECONDS*27,
+			DAY_IN_SECONDS*28,
+			DAY_IN_SECONDS*29,
+			DAY_IN_SECONDS*30,
+			DAY_IN_SECONDS*31,
+		}
+	
 	int cache[CACHE_SIZE];
-	virtual void refresh_cache() = 0;
+	
+	struct date_struct {
+		int year,month,day,week_day;
+	};
+	
+	virtual time_t date2timestamp(int year, int month, int day) = 0;
+	virtual date_struct timestamp2date(time_t timestamp) = 0;
 	void clear_cache() {
 		for(int i = 0; i < CACHE_SIZE; i++){
 			cache[i] = EMPTY;
@@ -55,13 +96,21 @@ public:
 		clear_cache();
 		return *this;
 	}
+	
+	void refresh_cache() {
+		date_struct d = timestamp2date(timestamp);
+		cache[YEAR] = d.year;
+		cache[MONTH] = d.month;
+		cache[DAY] = d.day;
+		cache[WEEK_DAYS] = d.week_day;
+	}
 
 	float julian_day() const {
-		return ( timestamp / 86400 ) + 2440587.5;
+		return ( timestamp / DAY_IN_SECONDS ) + 2440587.5;
 	}
 
 	Date& set_julian_day(float jd) {
-		int ts = (int) ((jd - 2440587.5) * 86400);
+		int ts = (int) ((jd - 2440587.5) * DAY_IN_SECONDS);
 		return set_unix_timestamp(ts);
 	}
 	
@@ -125,74 +174,53 @@ public:
 
 	int operator -(const Date& other) const {
 		time_t difference = timestamp - other.get_unix_timestamp();
-		return difference/86400;
+		return difference/DAY_IN_SECONDS;
+	}
+	
+	Date& add_day(int days) {
+		if (days >= -31 && days < 0) {
+			return set_unix_timestamp(timestamp - days_in_sec[days-1]);
+		}
+		if (days <= 31) {
+			return set_unix_timestamp(timestamp + days_in_sec[days-1]);
+		} 
+		return set_unix_timestamp(timestamp + days*DAY_IN_SECONDS);
 	}
 
-	Date& operator ++(const Date& rhs) 
-	{
-		time_t time = rhs.get_unix_timestamp();
-		return rhs.set_unix_timestamp(time + DAY_IN_SECONDS);
-	}
+	Date& operator ++() { return add_day(1); }
 
-	Date& operator --(const Date& rhs) 
-	{
-		time_t time = rhs.get_unix_timestamp();
-		return rhs.set_unix_timestamp(time + DAY_IN_SECONDS);
-	}
+	Date& operator --() { return add_day(-1); }
 
-	Date& operator +=(int years = 0, int months = 0, int days = 0) 
-	{
-		// time in seconds
-		time_t time = DAY_IN_SECONDS*years + DAY_IN_SECONDS*months + DAY_IN_SECONDS*days;
-		time = time + rhs.get_unix_timestamp();
-		return rhs.set_unix_timestamp(time);
-	}
+	Date& operator +=(int days) { return add_day(days); }
 
-	Date& operator -=(int years = 0, int months = 0, int days = 0) 
-	{
-		// time in seconds
-		time_t time = DAY_IN_SECONDS*years + DAY_IN_SECONDS*months + DAY_IN_SECONDS*days;
-		time = time - rhs.get_unix_timestamp(); // negatie time shouldn't cause a problem here!
-		return rhs.set_unix_timestamp(time);
-	}
+	Date& operator -=(int days) { return add_day(-days); }	
 
-	void add_year(int n = 1)
+	Date& add_month(int month)
 	{
-		time_t year = DAY_IN_SECONDS*
+		if day_in_next_month_in_same_year
+			struct date_struct ds;
+			ds.year = year();
+			ds.month = month() + 1;
+			ds.day = day();
+			set_unix_timestamp(date2timestamp(ds));
+		else if not day_in_next_month_in_same_year
+			set_unix_timestamp(timestamp + days[29]);
+		else if FUCK ITS FEBRUARY 29
 	}
 
 	/***************
 	**COMPARATORS **
 	****************/
-	bool operator ==(const Date& rhs) const
-	{
-		return this-rhs;	//? (this-rhs) == 0 ? true : false;
-	}
+	bool operator ==(const Date& rhs) const	{ return !(this-rhs);}
 
-	bool operator !=(const Date& rhs) const
-	{
-		return ! (this==rhs); // without the
-	}
+	bool operator !=(const Date& rhs) const	{return !(this==rhs);}
 
-	bool operator <(const Date& rhs) const
-	{
-		return (this-rhs) < 0 ? true : false;
-	}
+	bool operator <(const Date& rhs) const	{return (this-rhs) < 0 ? true : false;}
 
-	bool operator <=(const Date& rhs) const
-	{
-		return (this-rhs) <= 0 ? true : false; 
-	}
+	bool operator <=(const Date& rhs) const	{return (this-rhs) <= 0 ? true : false; }
 
-	bool operator >(const Date& rhs) const
-	{
-		return (this-rhs) > 0 ? true : false; 
-	}
-
-	bool operator >=(const Date& rhs) const
-	{
-		return (this-rhs) >= 0 ? true : false; 
-	}
+	bool operator >(const Date& rhs) const	{return (this-rhs) > 0 ? true : false; }
+	bool operator >=(const Date& rhs) const	{return (this-rhs) >= 0 ? true : false; }
 
 	friend std::ostream & operator<<(std::ostream & os, Date& date) {
 		std::string month, day;
@@ -250,6 +278,10 @@ public:
 		given_date->tm_mday = day;
 
 		set_unix_timestamp(mktime(given_date));
+	}
+	
+	float year_in_seconds() {
+		return 365.25;
 	}
 
 	void refresh_cache(){
