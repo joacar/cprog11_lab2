@@ -11,6 +11,8 @@
 #define DAY 2
 #define WEEK_DAY 3
 
+#define DAY_IN_SECONDS 86 400
+
 class Date {
 
 protected:
@@ -117,13 +119,89 @@ public:
 		}
 	}
 
+	/***************
+	*** MUTATORS ***
+	****************/
+
 	int operator -(const Date& other) const {
 		time_t difference = timestamp - other.get_unix_timestamp();
 		return difference/86400;
 	}
 
+	Date& operator ++(const Date& rhs) 
+	{
+		time_t time = rhs.get_unix_timestamp();
+		return rhs.set_unix_timestamp(time + DAY_IN_SECONDS);
+	}
+
+	Date& operator --(const Date& rhs) 
+	{
+		time_t time = rhs.get_unix_timestamp();
+		return rhs.set_unix_timestamp(time + DAY_IN_SECONDS);
+	}
+
+	Date& operator +=(int years = 0, int months = 0, int days = 0) 
+	{
+		// time in seconds
+		time_t time = DAY_IN_SECONDS*years + DAY_IN_SECONDS*months + DAY_IN_SECONDS*days;
+		time = time + rhs.get_unix_timestamp();
+		return rhs.set_unix_timestamp(time);
+	}
+
+	Date& operator -=(int years = 0, int months = 0, int days = 0) 
+	{
+		// time in seconds
+		time_t time = DAY_IN_SECONDS*years + DAY_IN_SECONDS*months + DAY_IN_SECONDS*days;
+		time = time - rhs.get_unix_timestamp(); // negatie time shouldn't cause a problem here!
+		return rhs.set_unix_timestamp(time);
+	}
+
+	void add_year(int n = 1)
+	{
+		time_t year = DAY_IN_SECONDS*
+	}
+
+	/***************
+	**COMPARATORS **
+	****************/
+	bool operator ==(const Date& rhs) const
+	{
+		return this-rhs;	//? (this-rhs) == 0 ? true : false;
+	}
+
+	bool operator !=(const Date& rhs) const
+	{
+		return ! (this==rhs); // without the
+	}
+
+	bool operator <(const Date& rhs) const
+	{
+		return (this-rhs) < 0 ? true : false;
+	}
+
+	bool operator <=(const Date& rhs) const
+	{
+		return (this-rhs) <= 0 ? true : false; 
+	}
+
+	bool operator >(const Date& rhs) const
+	{
+		return (this-rhs) > 0 ? true : false; 
+	}
+
+	bool operator >=(const Date& rhs) const
+	{
+		return (this-rhs) >= 0 ? true : false; 
+	}
+
 	friend std::ostream & operator<<(std::ostream & os, Date& date) {
-		os << date.year() << "-" << date.month() << "-" << date.day();
+		std::string month, day;
+		if(date.month() < 10)
+			month = "0" + date.month();
+		if(date.day() < 10)
+			day = "0" + date.month()
+		
+		os << date.year() << "-" << month << "-" << day;
 		os << " (" << date.week_day_name() << ")";
 		os << " MJD: " << date.mod_julian_day();
 		return os;
