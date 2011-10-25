@@ -70,7 +70,7 @@ public:
 		cache[WEEK_DAY] = d.week_day;
 	}
 
-	const float julian_day() const {
+	float julian_day() const {
 		return (timestamp / DAY_IN_SECONDS) + 2440587.5;
 	}
 
@@ -133,10 +133,11 @@ public:
 		}
 	}
 
+	int days_this_month() = 0;
+
 	/***************
 	*** MUTATORS ***
 	****************/
-
 	int operator -(const Date& other) const {
 		time_t difference = timestamp - other.get_unix_timestamp();
 		return difference/DAY_IN_SECONDS;
@@ -242,6 +243,8 @@ const int days_in_sec[31] =
 class WesternDate : public Date {
 
 protected:
+	static const int days_in_a_month[12];
+
 	void init() { populate_week_days(); }
 
 	WesternDate() : Date() { this->init(); }
@@ -258,10 +261,42 @@ protected:
 	}
 
 	virtual ~WesternDate() { delete [] WEEK_DAYS; }
+
+public:
+	int days_this_month()
+	{
+		int month = month();
+		return is_leap_year() ? days_in_a_month[month-1]+1 : days_in_a_month[month-1];
+	}
 };
+const int days_in_a_month[12] =
+	{
+		31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
+	};
 
 class Gregorian : public WesternDate {
 
+private:
+	
+	bool is_leap_year()
+	{
+		int year = year(); 	//get year
+		return (year % 100 == 0 && year % 400 == 0) || (year % 4 == 0);
+	}
+	/*bool is_leap_year(int year)
+	{
+		bool leap_year = false;
+		if(year % 100 == 0)
+		{
+			if(year % 400 == 0)
+				leap_year = true;
+		}
+		else if(year % 4 == 0)
+		{
+			leap_year = true;
+		}
+		return leap_year;
+	}*/
 public:
 	Gregorian() : WesternDate() {}
 	
@@ -275,7 +310,7 @@ public:
 		set_unix_timestamp(mktime(given_date));
 	}
 	
-	float year_in_seconds() { return 365.25; }
+	float year_in_seconds() { return 365.25*DAY_IN_SECONDS; }
 
 	void refresh_cache(){
 		time_t ts = get_unix_timestamp();
@@ -289,6 +324,7 @@ public:
 
 	time_t date2timestamp(int year, int month, int day)
 	{
+
 		return 0;	
 	}
 
@@ -340,7 +376,7 @@ public:
 
 	time_t date2timestamp(int year, int month, int day)
 	{
-		return 0;	
+			
 	}
 
 	date_struct timestamp2date(time_t timestamp)
