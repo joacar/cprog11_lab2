@@ -272,8 +272,7 @@ protected:
 	//	}
 
 	virtual ~WesternDate() { delete [] WEEK_DAYS; }
-
-public:
+	
 	int days_this_month()
 	{
 		int month = this->month();
