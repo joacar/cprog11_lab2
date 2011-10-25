@@ -24,6 +24,7 @@ protected:
 	};
 	
 	std::string* WEEK_DAYS;
+	std::string* MONTHS;
 	virtual void populate_week_days() = 0;
 	virtual bool is_leap_year() = 0;
 	virtual time_t date2timestamp(int year, int month, int day) = 0;
@@ -250,11 +251,16 @@ class WesternDate : public Date {
 protected:
 	static const int days_in_a_month[12];
 
-	void init() { populate_week_days(); }
+	void init() { populate(); }
 
 	WesternDate() : Date() { this->init(); }
 
-	void populate_week_days(){
+	void populate() {
+		populate_months();
+		populate_week_days();
+	}
+
+	void populate_week_days() {
 		WEEK_DAYS = new std::string[7];
 		WEEK_DAYS[0] = "sunday";
 		WEEK_DAYS[1] = "monday";
@@ -265,13 +271,23 @@ protected:
 		WEEK_DAYS[6] = "saturday";
 	}
 
-	// make static? same with week_days? More efficient?
-	//months_name = new std::string[12] = 
-	//	{"january", "february", "march", "april", "may", "june", 
-	//		"july", "august", "september", "october", "november", "december"
-	//	}
+	void populate_months() {
+		MONTHS = new std::string[12];
+		MONTHS[0] = "january";
+		MONTHS[1] = "february";
+		MONTHS[2] = "march";
+		MONTHS[3] = "april";
+		MONTHS[4] = "may";
+		MONTHS[5] = "june";
+		MONTHS[6] = "july";
+		MONTHS[7] = "august";
+		MONTHS[8] = "september";
+		MONTHS[9] = "october";
+		MONTHS[10] = "november";
+		MONTHS[11] = "december";	
+	}
 
-	virtual ~WesternDate() { delete [] WEEK_DAYS; }
+	virtual ~WesternDate() { delete [] WEEK_DAYS; delete [] MONTHS; }
 	
 	int days_this_month()
 	{
