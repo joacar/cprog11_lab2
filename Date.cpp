@@ -23,6 +23,9 @@ protected:
 		int year,month,day,week_day;
 	};
 	
+	std::string* WEEK_DAYS;
+	virtual void populate_week_days() = 0;
+	virtual bool is_leap_year() = 0;
 	virtual time_t date2timestamp(int year, int month, int day) = 0;
 	virtual date_struct timestamp2date(time_t timestamp) = 0;
 
@@ -32,9 +35,6 @@ protected:
 		}
 	}
 
-	std::string* WEEK_DAYS;
-	virtual void populate_week_days() = 0;
-	
 	void init() { clear_cache(); }
 
 private:
@@ -175,6 +175,11 @@ public:
 		return *this;
 	}
 
+	Date& add_year(int year)
+	{
+		return *this;
+	}
+
 	/***************
 	**COMPARATORS **
 	****************/
@@ -251,14 +256,20 @@ protected:
 
 	void populate_week_days(){
 		WEEK_DAYS = new std::string[7];
-		WEEK_DAYS[0] = "Sunday";
-		WEEK_DAYS[1] = "Monday";
-		WEEK_DAYS[2] = "Tuesday";
-		WEEK_DAYS[3] = "Wednesday";
-		WEEK_DAYS[4] = "Thursday";
-		WEEK_DAYS[5] = "Friday";
-		WEEK_DAYS[6] = "Saturday";
+		WEEK_DAYS[0] = "sunday";
+		WEEK_DAYS[1] = "monday";
+		WEEK_DAYS[2] = "tuesday";
+		WEEK_DAYS[3] = "wednesday";
+		WEEK_DAYS[4] = "thursday";
+		WEEK_DAYS[5] = "friday";
+		WEEK_DAYS[6] = "saturday";
 	}
+
+	// make static? same with week_days? More efficient?
+	//months_name = new std::string[12] = 
+	//	{"january", "february", "march", "april", "may", "june", 
+	//		"july", "august", "september", "october", "november", "december"
+	//	}
 
 	virtual ~WesternDate() { delete [] WEEK_DAYS; }
 
@@ -269,34 +280,20 @@ public:
 		return is_leap_year() ? days_in_a_month[month-1]+1 : days_in_a_month[month-1];
 	}
 };
+
 const int days_in_a_month[12] =
 	{
 		31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
 	};
 
 class Gregorian : public WesternDate {
-
-private:
-	
+protected:
 	bool is_leap_year()
 	{
-		int year = year(); 	//get year
+		int year = year();
 		return (year % 100 == 0 && year % 400 == 0) || (year % 4 == 0);
 	}
-	/*bool is_leap_year(int year)
-	{
-		bool leap_year = false;
-		if(year % 100 == 0)
-		{
-			if(year % 400 == 0)
-				leap_year = true;
-		}
-		else if(year % 4 == 0)
-		{
-			leap_year = true;
-		}
-		return leap_year;
-	}*/
+
 public:
 	Gregorian() : WesternDate() {}
 	
@@ -338,6 +335,8 @@ public:
 };
 
 class Julian : public WesternDate {
+protected:
+	bool is_leap_year() { return year() % 4 == 0; } 
 
 public:
 	Julian() : WesternDate() {}
@@ -376,7 +375,7 @@ public:
 
 	time_t date2timestamp(int year, int month, int day)
 	{
-			
+		return 0;
 	}
 
 	date_struct timestamp2date(time_t timestamp)
@@ -384,7 +383,6 @@ public:
 		date_struct ds;
 		return ds;
 	}
-
 };
 
 int main(){
