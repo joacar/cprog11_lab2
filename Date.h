@@ -14,6 +14,7 @@
 class Date 
 {
 protected:
+	std::string* WEEK_DAYS;
 	static const int days_in_sec[31];
 	//TODO Typically calendar specific. Make virtual or move to Western
 	static const int days_in_a_month[12]; 
@@ -23,25 +24,24 @@ protected:
 	struct date_struct {
 		int year,month,day,week_day;
 	};
-	
-	virtual time_t date2timestamp(int year, int month, int day) = 0;
-	virtual date_struct timestamp2date(time_t timestamp) = 0;
 
 	void clear_cache();
 
-	std::string* WEEK_DAYS;
-	virtual void populate_week_days() = 0;
-	
 	void init();
+	
+	virtual void is_leap_year() = 0;
+	virtual void populate_week_days() = 0;
+	virtual time_t date2timestamp(int year, int month, int day) = 0;
+	virtual date_struct timestamp2date(time_t timestamp) = 0;
 
 private:
 	time_t timestamp;
 
 public:
 	// Default constructor sets date to today
-	Date() : timestamp( time(&timestamp) ) { this->init(); }
+	Date() : timestamp( time(&timestamp) );
 
-	Date(time_t t) : timestamp(t) { this->init(); }
+	Date(time_t t) : timestamp(t);
 
 	virtual ~Date() {}
 
@@ -56,7 +56,7 @@ public:
 
 	Date& set_julian_day(float jd);
 	
-	int mod_julian_day() const { return julian_day() - 2400000.5; } 
+	int mod_julian_day() const; 
 
 	int year();
 
