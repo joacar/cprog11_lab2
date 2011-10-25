@@ -28,6 +28,8 @@ protected:
 	virtual bool is_leap_year() = 0;
 	virtual time_t date2timestamp(int year, int month, int day) = 0;
 	virtual date_struct timestamp2date(time_t timestamp) = 0;
+	//virtual int days_this_month() = 0;
+
 
 	void clear_cache() {
 		for(int i = 0; i < CACHE_SIZE; i++){
@@ -132,8 +134,6 @@ public:
 			return WEEK_DAYS[cache[WEEK_DAY]];
 		}
 	}
-
-	int days_this_month() = 0;
 
 	/***************
 	*** MUTATORS ***
@@ -276,7 +276,7 @@ protected:
 public:
 	int days_this_month()
 	{
-		int month = month();
+		int month = this->month();
 		return is_leap_year() ? days_in_a_month[month-1]+1 : days_in_a_month[month-1];
 	}
 };
@@ -290,7 +290,7 @@ class Gregorian : public WesternDate {
 protected:
 	bool is_leap_year()
 	{
-		int year = year();
+		int year = this->year();
 		return (year % 100 == 0 && year % 400 == 0) || (year % 4 == 0);
 	}
 
