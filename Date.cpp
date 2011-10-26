@@ -261,6 +261,19 @@ public:
 	}
 };
 
+const std::string WesternDate::WEEK_DAYS[] = {
+	"sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"
+};
+
+const std::string WesternDate::MONTHS[] = {
+	"january", "february", "march", "april", "may", "june",
+	"july", "august", "september", "october", "november", "december"
+};
+
+const int WesternDate::DAYS_IN_A_MONTH[] = {
+	31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
+};
+
 class Gregorian : public WesternDate {
 
 private:
@@ -300,19 +313,6 @@ public:
 		cache.day = t->tm_mday;
 		cache.week_day = t->tm_wday;
 	}
-};
-
-const std::string WesternDate::WEEK_DAYS[] = {
-	"sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"
-};
-
-const std::string WesternDate::MONTHS[] = {
-	"january", "february", "march", "april", "may", "june",
-	"july", "august", "september", "october", "november", "december"
-};
-
-const int WesternDate::DAYS_IN_A_MONTH[] = {
-	31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
 };
 
 class Julian : public WesternDate {
