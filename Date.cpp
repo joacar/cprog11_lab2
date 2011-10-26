@@ -13,205 +13,7 @@
 
 #define DAY_IN_SECONDS 86400
 
-class Date {
-
-protected:
-	static const int days_in_sec[31];
-	int cache[CACHE_SIZE];
-	
-	struct date_struct {
-		int year,month,day,week_day;
-	};
-	
-	std::string* WEEK_DAYS;
-	std::string* MONTHS;
-	virtual void populate_week_days() = 0;
-	virtual bool is_leap_year() = 0;
-	virtual time_t date2timestamp(int year, int month, int day) = 0;
-	virtual date_struct timestamp2date(time_t timestamp) = 0;
-	//virtual int days_this_month() = 0;
-
-
-	void clear_cache() {
-		for(int i = 0; i < CACHE_SIZE; i++){
-			cache[i] = EMPTY;
-		}
-	}
-
-	void init() { clear_cache(); }
-
-private:
-	// Store dates as UNIX timestamps
-	time_t timestamp;
-
-public:
-	// Default constructor sets date to today
-	Date() : timestamp( time(&timestamp) ) {
-		this->init();
-	}
-
-	Date(time_t t) : timestamp(t) {
-		this->init();
-	}
-
-	// Return unix timestamp of this Date
-	time_t get_unix_timestamp() const {
-		return timestamp;
-	}
-
-	Date& set_unix_timestamp(time_t new_timestamp) {
-		timestamp = new_timestamp;
-		clear_cache();
-		return *this;
-	}
-	
-	void refresh_cache() {
-		date_struct d = timestamp2date(timestamp);
-		cache[YEAR] = d.year;
-		cache[MONTH] = d.month;
-		cache[DAY] = d.day;
-		cache[WEEK_DAY] = d.week_day;
-	}
-
-	float julian_day() const {
-		return (timestamp / DAY_IN_SECONDS) + 2440587.5;
-	}
-
-	Date& set_julian_day(float jd) {
-		int ts = (int) ((jd - 2440587.5) * DAY_IN_SECONDS);
-		return set_unix_timestamp(ts);
-	}
-	
-	int mod_julian_day() const {
-		return julian_day() - 2400000.5;
-	} 
-
-	int year() {
-		if(cache[YEAR] != EMPTY) {
-			return cache[YEAR];
-		}
-		else {
-			refresh_cache();
-			return cache[YEAR];	
-		}
-	}
-
-	int month() {
-		if(cache[MONTH] != EMPTY) {
-			return cache[MONTH];
-		}
-		else {
-			refresh_cache();
-			return cache[MONTH];	
-		}
-	}
-
-	int day() {
-		if(cache[DAY] != EMPTY) {
-			return cache[DAY];
-		}
-		else {
-			refresh_cache();
-			return cache[DAY];	
-		}
-	}	
-	
-	int week_day() {
-		if(cache[WEEK_DAY] != EMPTY) {
-			return cache[WEEK_DAY];
-		}
-		else {
-			refresh_cache();
-			return cache[WEEK_DAY];	
-		}
-	}
-
-	std::string week_day_name(){
-		if(cache[WEEK_DAY] != EMPTY) {
-			return WEEK_DAYS[cache[WEEK_DAY]];
-		}
-		else {
-			refresh_cache();
-			return WEEK_DAYS[cache[WEEK_DAY]];
-		}
-	}
-
-	/***************
-	*** MUTATORS ***
-	****************/
-	int operator -(const Date& other) const {
-		time_t difference = timestamp - other.get_unix_timestamp();
-		return difference/DAY_IN_SECONDS;
-	}
-	
-	Date& add_day(int days) {
-		if (days >= -31 && days < 0) {
-			return set_unix_timestamp(timestamp - days_in_sec[days-1]);
-		}
-		if (days <= 31) {
-			return set_unix_timestamp(timestamp + days_in_sec[days-1]);
-		} 
-		return set_unix_timestamp(timestamp + days*DAY_IN_SECONDS);
-	}
-
-	Date& operator ++() { return add_day(1); }
-
-	Date& operator --() { return add_day(-1); }
-
-	Date& operator +=(int days) { return add_day(days); }
-
-	Date& operator -=(int days) { return add_day(-days); }	
-
-	Date& add_month(int month)
-	{
-		/*if day_in_next_month_in_same_year
-			struct date_struct ds;
-			ds.year = year();
-			ds.month = month() + 1;
-			ds.day = day();
-			set_unix_timestamp(date2timestamp(ds));
-		else if not day_in_next_month_in_same_year
-			set_unix_timestamp(timestamp + days[29]);
-		else if FUCK ITS FEBRUARY 29*/
-		return *this;
-	}
-
-	Date& add_year(int year)
-	{
-		return *this;
-	}
-
-	/***************
-	**COMPARATORS **
-	****************/
-	bool operator ==(const Date& rhs) const	{ return !(*this-rhs); }
-
-	bool operator !=(const Date& rhs) const	{ return !(*this==rhs); }
-
-	bool operator <(const Date& rhs) const { return (*this-rhs) < 0 ? true : false; }
-
-	bool operator <=(const Date& rhs) const	{ return (*this-rhs) <= 0 ? true : false; }
-
-	bool operator >(const Date& rhs) const { return (*this-rhs) > 0 ? true : false; }
-	
-	bool operator >=(const Date& rhs) const	{ return (*this-rhs) >= 0 ? true : false; }
-
-	friend std::ostream & operator<<(std::ostream & os, Date& date) {
-		std::string month, day;
-		if(date.month() < 10)
-			month = "0" + date.month();
-		if(date.day() < 10)
-			day = "0" + date.month();
-		
-		os << date.year() << "-" << month << "-" << day;
-		os << " (" << date.week_day_name() << ")";
-		os << " MJD: " << date.mod_julian_day();
-		return os;
-	}
-
-	virtual ~Date() {}
-};
-const int days_in_sec[31] = 
+const int Date::days_in_sec[31] = 
 		{
 			DAY_IN_SECONDS*1,
 			DAY_IN_SECONDS*2,
@@ -246,63 +48,234 @@ const int days_in_sec[31] =
 			DAY_IN_SECONDS*31
 		};
 
+class Date {
+
+protected:
+	struct date_struct {
+		int year,month,day,week_day;
+	};
+
+	date_struct cache = {EMPTY,EMPTY,EMPTY,EMPTY};
+	
+	static const int* days_in_sec;
+	static const std::string* WEEK_DAYS;
+	static const std::string* MONTHS;
+	static const int* days_in_a_month;
+
+	virtual void populate_week_days() = 0;
+	virtual int days_this_month() = 0;
+	virtual bool is_leap_year() = 0;
+	virtual time_t date2timestamp(int year, int month, int day) = 0;
+	virtual void timestamp2cache(time_t timestamp) = 0;
+
+	void clear_cache() {
+		cache.year = EMPTY;
+		cache.month = EMPTY;
+		cache.day = EMPTY;
+		cache.week_day = EMPTY;
+	}
+
+private:
+	// Store dates as UNIX timestamps
+	time_t timestamp;
+
+public:
+	// Default constructor sets date to today
+	Date() : timestamp( time(&timestamp) ) {}
+
+	Date(time_t t) : timestamp(t) {}
+
+	Date(const Date& rhs) : timestamp(rhs.get_unix_timestamp()) {}
+
+	Date& operator=(const Date& rhs) {
+		if (rhs != *this) {
+			set_unix_timestamp(rhs.get_unix_timestamp());
+		}
+		return *this;
+	}
+
+	virtual ~Date() {}
+
+	// Return unix timestamp of this Date
+	time_t get_unix_timestamp() const {
+		return timestamp;
+	}
+
+	Date& set_unix_timestamp(time_t new_timestamp) {
+		timestamp = new_timestamp;
+		clear_cache();
+		return *this;
+	}
+	
+	void refresh_cache() {
+		timestamp2cache(timestamp);
+	}
+
+	float julian_day() const {
+		return (timestamp / DAY_IN_SECONDS) + 2440587.5;
+	}
+
+	Date& set_julian_day(float jd) {
+		int ts = (int) ((jd - 2440587.5) * DAY_IN_SECONDS);
+		return set_unix_timestamp(ts);
+	}
+	
+	int mod_julian_day() const {
+		return julian_day() - 2400000.5;
+	} 
+
+	int year() {
+		if(cache.year == EMPTY) {
+			refresh_cache();
+		}
+		return cache.year;
+	}
+
+	int month() {
+		if(cache.month == EMPTY) {
+			refresh_cache();
+		}
+		return cache.month;
+	}
+
+	int day() {
+		if(cache.day == EMPTY) {
+			refresh_cache();
+		}
+		return cache.day;
+	}	
+	
+	int week_day() {
+		if(cache.week_day == EMPTY) {
+			refresh_cache();
+		}
+		return cache.week_day;
+	}
+
+	std::string week_day_name(){
+		if(cache.week_day == EMPTY) {
+			refresh_cache();
+		}
+		return WEEK_DAYS[cache.week_day];	
+	}
+
+	std::string month_name(){
+		if(cache.month == EMPTY) {
+			refresh_cache();
+		}
+		return MONTHS[cache.month];	
+	}
+
+	/***************
+	*** MUTATORS ***
+	****************/
+	int operator -(const Date& other) const {
+		time_t difference = timestamp - other.get_unix_timestamp();
+		return difference/DAY_IN_SECONDS;
+	}
+	
+	Date& add_day(int days) {
+		if (days >= -31 && days < 0) {
+			return set_unix_timestamp(timestamp - days_in_sec[days-1]);
+		}
+		if (days <= 31) {
+			return set_unix_timestamp(timestamp + days_in_sec[days-1]);
+		} 
+		return set_unix_timestamp(timestamp + days*DAY_IN_SECONDS);
+	}
+
+	Date& operator ++() { return add_day(1); }
+
+	Date& operator --() { return add_day(-1); }
+
+	Date& operator +=(int days) { return add_day(days); }
+
+	Date& operator -=(int days) { return add_day(-days); }	
+
+	Date& add_month(int month)
+	{
+		/*if day_in_next_month_in_same_year
+			set_unix_timestamp(date2timestamp(year(), month()+1, day()));
+		else if not day_in_next_month_in_same_year
+			set_unix_timestamp(timestamp + days[29]);
+		else if FUCK ITS FEBRUARY 29*/
+		return *this;
+	}
+
+	Date& add_year(int year)
+	{
+		/*if same_day_next_year
+			set_unix_timestamp(date2timestamp(year()+1,month(),day()));
+		else if FUCK ITS FEBRUARY 29*/
+		return *this;
+	}
+
+	/***************
+	**COMPARATORS **
+	****************/
+	bool operator ==(const Date& rhs) const	{ return !(*this-rhs); }
+
+	bool operator !=(const Date& rhs) const	{ return !(*this==rhs); }
+
+	bool operator <(const Date& rhs) const { return (*this-rhs) < 0 ? true : false; }
+
+	bool operator <=(const Date& rhs) const	{ return (*this-rhs) <= 0 ? true : false; }
+
+	bool operator >(const Date& rhs) const { return (*this-rhs) > 0 ? true : false; }
+	
+	bool operator >=(const Date& rhs) const	{ return (*this-rhs) >= 0 ? true : false; }
+
+	friend std::ostream & operator<<(std::ostream & os, Date& date) {
+		std::string month, day;
+		if(date.month() < 10)
+			month = "0" + date.month();
+		if(date.day() < 10)
+			day = "0" + date.month();
+		
+		os << date.year() << "-" << month << "-" << day;
+		os << " (" << date.week_day_name() << ")";
+		os << " MJD: " << date.mod_julian_day();
+		return os;
+	}
+
+};
+
+const std::string WesternDate::WEEK_DAYS[] = {
+	"sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"
+};
+
+const std::string WesternDate::MONTHS[] = {
+	"january", "february", "march", "april", "may", "june",
+	"july", "august", "september", "october", "november", "december"
+};
+
+const int WesternDate::DAYS_IN_A_MONTH[] = {
+	31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
+};
+
 class WesternDate : public Date {
 
 protected:
-	static const int days_in_a_month[12];
-
-	void init() { populate(); }
-
-	WesternDate() : Date() { this->init(); }
-
-	void populate() {
-		populate_months();
-		populate_week_days();
-	}
-
-	void populate_week_days() {
-		WEEK_DAYS = new std::string[7];
-		WEEK_DAYS[0] = "sunday";
-		WEEK_DAYS[1] = "monday";
-		WEEK_DAYS[2] = "tuesday";
-		WEEK_DAYS[3] = "wednesday";
-		WEEK_DAYS[4] = "thursday";
-		WEEK_DAYS[5] = "friday";
-		WEEK_DAYS[6] = "saturday";
-	}
-
-	void populate_months() {
-		MONTHS = new std::string[12];
-		MONTHS[0] = "january";
-		MONTHS[1] = "february";
-		MONTHS[2] = "march";
-		MONTHS[3] = "april";
-		MONTHS[4] = "may";
-		MONTHS[5] = "june";
-		MONTHS[6] = "july";
-		MONTHS[7] = "august";
-		MONTHS[8] = "september";
-		MONTHS[9] = "october";
-		MONTHS[10] = "november";
-		MONTHS[11] = "december";	
-	}
-
-	virtual ~WesternDate() { delete [] WEEK_DAYS; delete [] MONTHS; }
+	virtual ~WesternDate() {}
 	
 	int days_this_month()
 	{
-		int month = this->month();
-		return is_leap_year() ? days_in_a_month[month-1]+1 : days_in_a_month[month-1];
+		int month = this->month()-1;
+		if (is_leap_year() && MONTHS[month] == 'february') {
+			return days_in_a_month[month] + 1;
+		}
+		return days_in_a_month[month];
 	}
+
+public:
+	WesternDate() : Date() {}
+	WesternDate(time_t timestamp) : Date(timestamp) {}
 };
 
-const int days_in_a_month[12] =
-	{
-		31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
-	};
-
 class Gregorian : public WesternDate {
-protected:
+
+private:
+	float year_in_seconds() { return 365.25*DAY_IN_SECONDS; }
 	bool is_leap_year()
 	{
 		int year = this->year();
@@ -311,42 +284,31 @@ protected:
 
 public:
 	Gregorian() : WesternDate() {}
+
+	Gregorian(time_t timestamp) : WesternDate(timestamp) {}	
 	
-	Gregorian(int year, int month, int day) {
+	Gregorian(int year, int month, int day) : cache.year(year), cache.month(month), cache.day(day) {
+		set_unix_timestamp(date2timestamp(year,month,day));
+	}
+
+	time_t date2timestamp(int year, int month, int day)
+	{
 		time_t rawtime = time(&rawtime);
 		struct tm* given_date = localtime(&rawtime);
 		given_date->tm_year = year - 1900;
 		given_date->tm_mon = month - 1;
 		given_date->tm_mday = day;
-
-		set_unix_timestamp(mktime(given_date));
-	}
-	
-	float year_in_seconds() { return 365.25*DAY_IN_SECONDS; }
-
-	void refresh_cache(){
-		time_t ts = get_unix_timestamp();
-		struct tm* t = localtime(&ts);
-
-		cache[YEAR] = t->tm_year + 1900;
-		cache[MONTH] = t->tm_mon + 1;
-		cache[DAY] = t->tm_mday;
-		cache[WEEK_DAY] = t->tm_wday;
+		return mktime(given_date);	
 	}
 
-	time_t date2timestamp(int year, int month, int day)
+	void timestamp2cache(time_t timestamp)
 	{
-
-		return 0;	
+		struct tm* t = localtime(&timestamp);
+		cache.year = t->tm_year + 1900;
+		cache.month = t->tm_mon + 1;
+		cache.day = t->tm_mday;
+		cache.week_day = t->tm_wday;
 	}
-
-	date_struct timestamp2date(time_t timestamp)
-	{
-		date_struct ds;
-		return ds;
-	}
-	
-		
 };
 
 class Julian : public WesternDate {
