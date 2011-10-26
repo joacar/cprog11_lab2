@@ -18,7 +18,6 @@ protected:
 	const std::string* WEEK_DAYS;
 	const std::string* MONTHS;
 
-	virtual bool is_leap_year() = 0;
 	virtual void refresh_cache() = 0;
 
 	void clear_cache() {
@@ -244,6 +243,8 @@ protected:
 	static const std::string WEEK_DAYS[];
 	static const std::string MONTHS[];
 	static const int DAYS_IN_A_MONTH[];
+
+	virtual bool is_leap_year() = 0;
 
 public:
 	WesternDate() : Date(WEEK_DAYS, MONTHS, DAYS_IN_A_MONTH) {}
