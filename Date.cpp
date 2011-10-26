@@ -255,22 +255,25 @@ protected:
 	}
 
 public:
-	const std::string WEEK_DAYS[7] = {
+	WesternDate() : Date() {}
+	WesternDate(time_t timestamp) : Date(timestamp) {}
+};
+
+const std::string WEEK_DAYS[7] = 
+	{
 		"sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"
 	};
 
-	const std::string MONTHS[12] = {
+const std::string MONTHS[12] = 
+	{
 		"january", "february", "march", "april", "may", "june",
 		"july", "august", "september", "october", "november", "december"
 	};
 
-	const int DAYS_IN_A_MONTH[12] = { // WesternDate::
+const int DAYS_IN_A_MONTH[12] = 
+	{
 		31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
 	};
-
-	WesternDate() : Date() {}
-	WesternDate(time_t timestamp) : Date(timestamp) {}
-};
 
 class Gregorian : public WesternDate {
 
@@ -364,6 +367,7 @@ public:
 
 	void timestamp2cache(time_t timestamp)
 	{
+		
 	}
 };
 
