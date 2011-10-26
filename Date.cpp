@@ -18,6 +18,7 @@ protected:
 	const std::string* WEEK_DAYS;
 	const std::string* MONTHS;
 
+	virtual time_t date2timestamp(int year, int month, int day) = 0;
 	virtual void refresh_cache() = 0;
 
 	void clear_cache() {
@@ -339,6 +340,10 @@ public:
 		}
 		float julian_day = day + (153*month-457)/5 + 365*year + year/4 + 1721116.5;
 		return julian_day;
+	}
+
+	time_t date2timestamp(int year, int month, int day) {
+		return (time_t) (date2julianday(year,month,day)/DAYS_IN_SECS[0]) + 2440587.5;
 	}
 	
 	// Julian day number -> Julian date
