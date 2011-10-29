@@ -1,14 +1,14 @@
 #include <time.h>
+#include "kattistime.h"
 #include <iostream>
 #include <string>
 #include <math.h>
+
 
 #define EMPTY -1
 #define DAY_IN_SECONDS 86400
 
 class Date {
-
-//TODO Fix kattistime
 
 protected:
 	struct cache_struct {
@@ -37,7 +37,7 @@ private:
 
 public:
 	// Default constructor sets date to today
-	Date() : timestamp( time(&timestamp) ) { clear_cache(); }
+	Date() : timestamp( k_time(&timestamp) ) { clear_cache(); }
 
 	Date(time_t t) : timestamp(t) { clear_cache(); }
 
@@ -293,8 +293,8 @@ public:
 	time_t date2timestamp(int year, int month, int day)
 	{
 		// TODO Validation
-
-		time_t rawtime = time(&rawtime);
+		time_t rawtime;
+		k_time(&rawtime);
 		struct tm* given_date = localtime(&rawtime);
 		given_date->tm_year = year - 1900;
 		given_date->tm_mon = month - 1;
@@ -365,6 +365,11 @@ public:
 };
 
 int main(){
+	// Set kattistime to right now
+	time_t time_now;
+	time(&time_now);
+	set_k_time(time_now);
+
 	Gregorian gtoday;
 	std::cout << "Gregorian: " << gtoday << std::endl;
 	Julian jtoday;
