@@ -149,8 +149,15 @@ public:
 
 	Date& add_month(int months)
 	{
+		int year_num = year();
+		int month_num = month() + months;
+		if(month_num > 12) {
+			year_num += month_num/12;
+			month_num = month_num % 12;
+		}
+
 		try {
-			set_unix_timestamp(date2timestamp(year(), month()+months, day()));
+			set_unix_timestamp(date2timestamp(year_num, month_num, day()));
 		} catch(std::out_of_range& e) {
 			set_unix_timestamp(timestamp + DAYS_IN_SECS[29]);
 		}
@@ -387,6 +394,10 @@ int main(){
 	Gregorian gleap = Gregorian(2012,2,29);
 	gleap.add_year(-1).add_year(1);
 	std::cout << gleap << std::endl;
-
+	std::cout << "Gregorian(2010,12,29) + 2 months" << std::endl;	
+	Gregorian gleap2 = Gregorian(2010,12,29);
+	gleap2.add_month(2);
+	std::cout << gleap2 << std::endl;
+	
 	return 0;
 }
