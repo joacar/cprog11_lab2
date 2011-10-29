@@ -302,6 +302,9 @@ public:
 
 	Gregorian(int year, int month, int day) {
 		set_unix_timestamp(date2timestamp(year,month,day));
+		cache.year = year;
+		cache.month = month;
+		cache.day = day;
 	}
 
 	time_t date2timestamp(int year, int month, int day)
@@ -350,6 +353,9 @@ public:
 
 	Julian(int year, int month, int day) {
 		set_unix_timestamp(date2timestamp(year,month,day));
+		cache.year = year;
+		cache.month = month;
+		cache.day = day;
 	}
 
 	time_t date2timestamp(int year, int month, int day) {
