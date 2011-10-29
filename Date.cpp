@@ -383,11 +383,10 @@ int main(){
 	Julian jtoday;
 	std::cout << "Julian: " << jtoday << std::endl;
 
-	std::cout << "I was born on: " << std::endl;	
-	Gregorian gbirthday = Gregorian(1988,12,16);
-	std::cout << gbirthday << std::endl;
-	Julian jbirthday = Julian(1988,12,16);
-	std::cout << jbirthday << std::endl;
+	std::cout << "Gregorian(2012,2,29) - 1 year + 1 year" << std::endl;	
+	Gregorian gleap = Gregorian(2012,2,29);
+	gleap.add_year(-1).add_year(1);
+	std::cout << gleap << std::endl;
 
 	return 0;
 }
