@@ -1,6 +1,7 @@
 #include <time.h>
 #include "kattistime.h"
 #include <iostream>
+#include <stdexcept>
 #include <string>
 #include <math.h>
 
@@ -22,7 +23,8 @@ protected:
 
 	virtual std::string week_day_string(int day) = 0;
 	virtual std::string month_string(int month) = 0;
-	virtual int days_in_a_month(int month) = 0;
+	virtual int days_in_a_month(int year, int month) = 0;
+	virtual bool validate_date(int year, int month, int day) = 0;
 
 	void clear_cache() {
 		cache.year = EMPTY;
@@ -37,10 +39,7 @@ private:
 
 public:
 	// Default constructor sets date to today
-	Date() : timestamp( k_time(&timestamp) ) { clear_cache(); }
-
-	Date(time_t t) : timestamp(t) { clear_cache(); }
-
+	Date() : timestamp( /*k_time(&timestamp)*/ time(&timestamp) ) { clear_cache(); }
 	Date(const Date& rhs) : timestamp(rhs.get_unix_timestamp()) { clear_cache(); }
 
 	Date& operator=(const Date& rhs) {
@@ -119,7 +118,7 @@ public:
 	}
 
 	virtual int days_this_month() {
-		return days_in_a_month(month());
+		return days_in_a_month(year(), month());
 	}
 
 	/***************
@@ -148,21 +147,24 @@ public:
 
 	Date& operator -=(int days) { return add_day(-days); }	
 
-	Date& add_month(int month)
+	Date& add_month(int months)
 	{
-		/*if day_in_next_month_in_same_year
-			set_unix_timestamp(date2timestamp(year(), month()+1, day()));
-		else if not day_in_next_month_in_same_year
-			set_unix_timestamp(timestamp + days[29]);
-		else if FUCK ITS FEBRUARY 29*/
+		try {
+			set_unix_timestamp(date2timestamp(year(), month()+months, day()));
+		} catch(std::out_of_range& e) {
+			set_unix_timestamp(timestamp + DAYS_IN_SECS[29]);
+		}
 		return *this;
 	}
 
-	Date& add_year(int year)
+	Date& add_year(int years)
 	{
-		/*if same_day_next_year
-			set_unix_timestamp(date2timestamp(year()+1,month(),day()));
-		else if FUCK ITS FEBRUARY 29*/
+		try {
+			set_unix_timestamp(date2timestamp(year()+years, month(), day()));
+		} catch(std::out_of_range& e) {
+			// Leap year, 29 Feb -> 28 Feb
+			set_unix_timestamp(date2timestamp(year()+years, month(), day()-1));
+		}
 		return *this;
 	}
 
@@ -232,11 +234,10 @@ protected:
 	static const std::string MONTHS[];
 	static const int DAYS_IN_A_MONTH[];
 
-	virtual bool is_leap_year() = 0;
+	virtual bool is_leap_year(int year) = 0;
 
 public:
 	WesternDate() : Date() {}
-	WesternDate(time_t timestamp) : Date(timestamp) {}
 
 	virtual ~WesternDate() {}
 
@@ -248,13 +249,22 @@ public:
 		return WesternDate::MONTHS[month-1];
 	}
 
-	int days_in_a_month(int month)
+	int days_in_a_month(int year, int month)
 	{
 		month -= 1;
-		if (is_leap_year() && (month == 1)) {
+		if (is_leap_year(year) && (month == 1)) {
 			return WesternDate::DAYS_IN_A_MONTH[month] + 1;
 		}
 		return WesternDate::DAYS_IN_A_MONTH[month];
+	}
+
+	bool validate_date(int year, int month, int day) {
+		if (month >= 1 && month <= 12 
+			&& day >= 0 && day <= days_in_a_month(year, month)) {
+				return true;
+			} else {
+				throw std::out_of_range("Invalid date!");
+			}
 	}
 };
 
@@ -275,26 +285,25 @@ class Gregorian : public WesternDate {
 
 private:
 	float year_in_seconds() { return 365.25*DAYS_IN_SECS[0]; }
-	bool is_leap_year()
+	bool is_leap_year(int year)
 	{
-		int year = this->year();
 		return (year % 100 == 0 && year % 400 == 0) || (year % 4 == 0);
 	}
 
 public:
-	Gregorian() : WesternDate() {}
+	Gregorian() : WesternDate() {}	
 
-	Gregorian(time_t timestamp) : WesternDate(timestamp) {}	
-	
 	Gregorian(int year, int month, int day) {
 		set_unix_timestamp(date2timestamp(year,month,day));
 	}
 
 	time_t date2timestamp(int year, int month, int day)
 	{
-		// TODO Validation
-		time_t rawtime;
-		k_time(&rawtime);
+		validate_date(year, month, day);
+
+		time_t rawtime = 0;
+		//k_time(&rawtime);
+		//time(&rawtime);
 		struct tm* given_date = localtime(&rawtime);
 		given_date->tm_year = year - 1900;
 		given_date->tm_mon = month - 1;
@@ -314,18 +323,7 @@ public:
 };
 
 class Julian : public WesternDate {
-protected:
-	bool is_leap_year() { return year() % 4 == 0; } 
-
-public:
-	Julian() : WesternDate() {}
-
-	Julian(time_t timestamp) : WesternDate(timestamp) {}
-
-	Julian(int year, int month, int day){
-		set_julian_day(date2julianday(year,month,day));		
-	}
-	
+private:
 	// Julian date -> Julian Day Number
 	// from http://mysite.verizon.net/aesir_research/date/date0.htm
 	float date2julianday(int year, int month, int day) {
@@ -337,9 +335,19 @@ public:
 		return julian_day;
 	}
 
+protected:
+	bool is_leap_year(int year) { return year % 4 == 0; } 
+
+public:
+	Julian() : WesternDate() {}
+
+	Julian(int year, int month, int day) {
+		set_unix_timestamp(date2timestamp(year,month,day));
+	}
+
 	time_t date2timestamp(int year, int month, int day) {
-		// TODO Validation
-		return (time_t) (date2julianday(year,month,day)/DAYS_IN_SECS[0]) + 2440587.5;
+		validate_date(year, month, day);
+		return (time_t) (date2julianday(year,month,day) - 2440587.5)*DAYS_IN_SECS[0];
 	}
 	
 	// Julian day number -> Julian date
@@ -366,9 +374,9 @@ public:
 
 int main(){
 	// Set kattistime to right now
-	time_t time_now;
-	time(&time_now);
-	set_k_time(time_now);
+	// time_t time_now;
+	// time(&time_now);
+	// set_k_time(time_now);
 
 	Gregorian gtoday;
 	std::cout << "Gregorian: " << gtoday << std::endl;
@@ -380,6 +388,6 @@ int main(){
 	std::cout << gbirthday << std::endl;
 	Julian jbirthday = Julian(1988,12,16);
 	std::cout << jbirthday << std::endl;
-		
+
 	return 0;
 }
