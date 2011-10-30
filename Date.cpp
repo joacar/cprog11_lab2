@@ -11,6 +11,8 @@
 
 class Date {
 
+// TODO Enable headers
+
 protected:
 	struct cache_struct {
 		int year,month,day,week_day;
@@ -117,7 +119,7 @@ public:
 		return month_string(cache.month);	
 	}
 
-	virtual int days_this_month() {
+	int days_this_month() {
 		return days_in_a_month(year(), month());
 	}
 
@@ -151,10 +153,19 @@ public:
 	{
 		int year_num = year();
 		int month_num = month() + months;
+
+		// Adjust if rolling over year boundaries
+		// Positive case
 		if(month_num > 12) {
 			year_num += month_num/12;
 			month_num = month_num % 12;
 		}
+
+		// Negative case
+		if(months < 0) {
+			year_num += months/12;
+			month_num = (month_num % 12) + 12;
+		}		
 
 		try {
 			set_unix_timestamp(date2timestamp(year_num, month_num, day()));
@@ -400,9 +411,9 @@ int main(){
 	Gregorian gleap = Gregorian(2012,2,29);
 	gleap.add_year(-1).add_year(1);
 	std::cout << gleap << std::endl;
-	std::cout << "Gregorian(2010,12,29) + 2 months" << std::endl;	
-	Gregorian gleap2 = Gregorian(2010,12,29);
-	gleap2.add_month(2);
+	std::cout << "Gregorian(2011,12,16) - 276 months" << std::endl;	
+	Gregorian gleap2 = Gregorian(2011,12,16);
+	gleap2.add_month(-276);
 	std::cout << gleap2 << std::endl;
 	
 	return 0;
