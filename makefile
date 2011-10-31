@@ -5,13 +5,11 @@
 cxxtestpath = ../../../cxxtest/
 testcode    = test_vec.h
 test_file	= vector.h
+test_files	= dates.cpp Date.cpp WesternDate.cpp Gregorian.cpp Julian.cpp kattistime.cpp
 
-testcode.cpp: $(testcode)
-	$(cxxtestpath)cxxtestgen.py --error-printer -o testcode.cpp $(testcode)
-
-test.out: testcode.cpp
-	g++ -o test.out -I $(cxxtestpath) testcode.cpp $(test_file)
-
+test.out:
+	echo '\t Generates test.out ...'
+	g++ -g -Wall -o test.out dates.cpp Date.cpp WesternDate.cpp Gregorian.cpp Julian.cpp kattistime.cpp
 clean:
 	rm -f *.o *.out testcode.cpp
 
