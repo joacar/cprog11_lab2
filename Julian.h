@@ -11,7 +11,7 @@ private:
 	float date2julianday(int year, int month, int day);
 
 protected:
-	bool is_leap_year(int year); 
+	bool is_leap_year(int year) const; 
 
 public:
 	Julian();
@@ -21,7 +21,7 @@ public:
 	
 	// Julian day number -> Julian date
 	// from http://mysite.verizon.net/aesir_research/date/date0.htm
-	void refresh_cache();
+	void refresh_cache() const;
 };
 
 #endif

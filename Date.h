@@ -11,21 +11,21 @@ private:
 	time_t timestamp;
 
 protected:
-	struct cache_struct {
+	mutable struct cache_struct {
 		int year,month,day,week_day;
 	} cache;
 	
 	static const int DAYS_IN_SECS[];
 
 	virtual time_t date2timestamp(int year, int month, int day) = 0;
-	virtual void refresh_cache() = 0;
+	virtual void refresh_cache() const = 0;
 
-	virtual std::string week_day_string(int day) = 0;
-	virtual std::string month_string(int month) = 0;
-	virtual int days_in_a_month(int year, int month) = 0;
-	virtual bool validate_date(int year, int month, int day) = 0;
+	virtual std::string week_day_string(int day) const = 0;
+	virtual std::string month_string(int month) const = 0;
+	virtual int days_in_a_month(int year, int month) const = 0;
+	virtual bool validate_date(int year, int month, int day) const = 0;
 
-	void clear_cache();
+	void clear_cache() const;
 
 public:
 	Date();
@@ -40,13 +40,13 @@ public:
 	Date& set_julian_day(float jd);
 	
 	int mod_julian_day() const;
-	int year();
-	int month();
-	int day();	
-	int week_day();
-	std::string week_day_name();
-	std::string month_name();
-	int days_this_month();
+	int year() const;
+	int month() const;
+	int day() const;	
+	int week_day() const;
+	std::string week_day_name() const;
+	std::string month_name() const;
+	int days_this_month() const;
 
 	/***************
 	*** MUTATORS ***

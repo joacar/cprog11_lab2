@@ -2,7 +2,7 @@
 #include "WesternDate.h"
 #include "Gregorian.h"
 
-bool Gregorian::is_leap_year(int year)
+bool Gregorian::is_leap_year(int year) const
 {
 	return (year % 100 == 0 && year % 400 == 0) || (year % 4 == 0);
 }
@@ -29,7 +29,7 @@ time_t Gregorian::date2timestamp(int year, int month, int day)
 	return mktime(given_date);	
 }
 
-void Gregorian::refresh_cache()
+void Gregorian::refresh_cache() const
 {
 	time_t timestamp = get_unix_timestamp();
 	const struct tm* t = localtime(&timestamp);

@@ -12,7 +12,7 @@ Julian::Julian(int year, int month, int day) {
 	cache.day = day;
 }
 
-bool Julian::is_leap_year(int year) { return year % 4 == 0; } 
+bool Julian::is_leap_year(int year) const { return year % 4 == 0; } 
 
 time_t Julian::date2timestamp(int year, int month, int day) {
 	validate_date(year, month, day);
@@ -27,7 +27,7 @@ float Julian::date2julianday(int year, int month, int day) {
 	return julian_day;
 }
 
-void Julian::refresh_cache() {
+void Julian::refresh_cache() const {
 	float jd = julian_day();
 	int z = (int) floor(jd - 1721116.5);
 	float r = (jd - 1721116.5) - z;

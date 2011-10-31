@@ -7,14 +7,14 @@
 class Gregorian : public WesternDate {
 
 private:
-	bool is_leap_year(int year);
+	bool is_leap_year(int year) const;
 
 public:
 	Gregorian();
 	Gregorian(int year, int month, int day);
 
 	time_t date2timestamp(int year, int month, int day);
-	void refresh_cache();
+	void refresh_cache() const;
 
 };
 

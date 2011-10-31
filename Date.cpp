@@ -68,7 +68,7 @@ Date& Date::set_unix_timestamp(time_t new_timestamp) {
 	return *this;
 }
 
-void Date::clear_cache() {
+void Date::clear_cache() const {
 	cache.year = EMPTY;
 	cache.month = EMPTY;
 	cache.day = EMPTY;
@@ -88,49 +88,49 @@ int Date::mod_julian_day() const {
 	return julian_day() - 2400000.5;
 } 
 
-int Date::year() {
+int Date::year() const {
 	if(cache.year == EMPTY) {
 		refresh_cache();
 	}
 	return cache.year;
 }
 
-int Date::month() {
+int Date::month() const {
 	if(cache.month == EMPTY) {
 		refresh_cache();
 	}
 	return cache.month;
 }
 
-int Date::day() {
+int Date::day() const {
 	if(cache.day == EMPTY) {
 		refresh_cache();
 	}
 	return cache.day;
 }	
 
-int Date::week_day() {
+int Date::week_day() const {
 	if(cache.week_day == EMPTY) {
 		refresh_cache();
 	}
 	return cache.week_day;
 }
 
-std::string Date::week_day_name(){
+std::string Date::week_day_name() const {
 	if(cache.week_day == EMPTY) {
 		refresh_cache();
 	}
 	return week_day_string(cache.week_day);	
 }
 
-std::string Date::month_name(){
+std::string Date::month_name() const {
 	if(cache.month == EMPTY) {
 		refresh_cache();
 	}
 	return month_string(cache.month);	
 }
 
-int Date::days_this_month() {
+int Date::days_this_month() const {
 	return days_in_a_month(year(), month());
 }
 

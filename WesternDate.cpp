@@ -16,15 +16,15 @@ const int WesternDate::DAYS_IN_A_MONTH[] = {
 WesternDate::WesternDate() : Date() {}
 WesternDate::~WesternDate() {}
 
-std::string WesternDate::week_day_string(int day) {
+std::string WesternDate::week_day_string(int day) const {
 	return WesternDate::WEEK_DAYS[day];
 }
 
-std::string WesternDate::month_string(int month) {
+std::string WesternDate::month_string(int month) const {
 	return WesternDate::MONTHS[month-1];
 }
 
-int WesternDate::days_in_a_month(int year, int month)
+int WesternDate::days_in_a_month(int year, int month) const
 {
 	month -= 1;
 	if (is_leap_year(year) && (month == 1)) {
@@ -33,7 +33,7 @@ int WesternDate::days_in_a_month(int year, int month)
 	return WesternDate::DAYS_IN_A_MONTH[month];
 }
 
-bool WesternDate::validate_date(int year, int month, int day) {
+bool WesternDate::validate_date(int year, int month, int day) const {
 	if (month >= 1 && month <= 12 
 		&& day >= 0 && day <= days_in_a_month(year, month)) {
 			return true;
