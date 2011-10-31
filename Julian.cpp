@@ -43,5 +43,5 @@ void Julian::refresh_cache() const {
 	}
 	cache.year = y;
 	cache.month = m;
-	cache.week_day = 1; // <-- TODO FIX THIS
+	cache.week_day = (int(julian_day() + 1.5)) % 7; // <-- TODO FIX THIS
 }
