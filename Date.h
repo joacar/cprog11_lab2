@@ -61,6 +61,7 @@ public:
 	Date& add_month(int months);
 	Date& add_month();
 	Date& add_year(int years);
+	Date& add_year();
 
 	int operator -(const Date& other) const;
 	Date& operator ++();

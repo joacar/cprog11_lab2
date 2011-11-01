@@ -20,9 +20,9 @@ int main()
 
     ////////////////////////////////////////////////////////////
     // Sätt tiden. OBS skicka inte nedanstående kod till kattis
-    time_t mytime;
-    time(&mytime);
-    set_k_time(mytime);
+    // time_t mytime;
+    // time(&mytime);
+    set_k_time(1320146887);
     ////////////////////////////////////////////////////////////
 
     

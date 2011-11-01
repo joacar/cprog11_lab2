@@ -1,6 +1,6 @@
 #include <time.h>
-#include "WesternDate.h"
-#include "Gregorian.h"
+#include "westerndate.h"
+#include "gregorian.h"
 
 namespace lab2 {
 

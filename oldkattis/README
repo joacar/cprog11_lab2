@@ -1,0 +1,14 @@
+Detta är filerna för gamla kattisproblemet oldkattis:cprog...
+
+Det finns egna testfiler som man kan köra här. 
+
+Exempel:
+Kompilera era datumklasser med cprog09lab22c.cpp till en fil "dittprogram.out"
+Kör programmet med "lab22c.in" som indata och spara utata i "utdata.txt"
+  cat lab22c.in | dittprogram.out > utdata.txt
+
+Kolla om utdata stämmer med referensutdata
+  diff utdata.txt lab22c.out
+
+
+

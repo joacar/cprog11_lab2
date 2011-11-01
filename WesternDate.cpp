@@ -1,4 +1,4 @@
-#include "WesternDate.h"
+#include "westerndate.h"
 
 namespace lab2 
 {

@@ -1,8 +1,8 @@
 #include <time.h>
 #include <math.h>
 
-#include "WesternDate.h"
-#include "Julian.h"
+#include "westerndate.h"
+#include "julian.h"
 namespace lab2 {
 
 Julian::Julian() : WesternDate() {}

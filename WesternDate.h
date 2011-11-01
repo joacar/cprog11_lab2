@@ -2,7 +2,7 @@
 #define _WESTERN_DATE_
 
 #include <stdexcept>
-#include "Date.h"
+#include "date.h"
 
 namespace lab2
 {

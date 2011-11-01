@@ -4,7 +4,7 @@
 #include <math.h>
 
 #include "kattistime.h"
-#include "Date.h"
+#include "date.h"
 
 #define EMPTY -1
 #define DAY_IN_SECONDS 86400
@@ -198,6 +198,11 @@ Date& Date::add_month(int months)
 Date& Date::add_month()
 {
 	return add_month(1);
+}
+
+Date& Date::add_year()
+{
+	return add_year(1);
 }
 
 Date& Date::add_year(int years)

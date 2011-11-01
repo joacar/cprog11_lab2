@@ -2,7 +2,7 @@
 #define _GREGORIAN_
 
 #include <time.h>
-#include "WesternDate.h"
+#include "westerndate.h"
 
 namespace lab2 
 {

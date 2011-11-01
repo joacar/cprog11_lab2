@@ -2,7 +2,7 @@
 #define _JULIAN_
 
 #include <time.h>
-#include "WesternDate.h"
+#include "westerndate.h"
 
 namespace lab2 
 {
