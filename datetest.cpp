@@ -1,7 +1,7 @@
 // projektlokala headerfiler
 #include "kattistime.h"     
-#include "julian.h"         
-#include "gregorian.h"      
+#include "Julian.h"         
+#include "Gregorian.h"      
 
 // STL headerfiler
 #include <iostream>
