@@ -20,6 +20,8 @@ const int WesternDate::NUM_WEEK_DAYS = 7;
 const int WesternDate::NUM_MONTHS = 12;
 
 WesternDate::WesternDate() : Date() {}
+WesternDate::WesternDate(const Date& rhs) : Date(rhs) {}
+WesternDate::WesternDate(Date* dp) : Date(dp) {}
 WesternDate::~WesternDate() {}
 
 std::string WesternDate::week_day_string(int day) const {

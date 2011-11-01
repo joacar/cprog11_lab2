@@ -3,6 +3,8 @@
 #include "Gregorian.h"
 #include "Julian.h"
 
+using namespace lab2;
+
 int main(){
 	// Set kattistime to right now
 	// time_t time_now;

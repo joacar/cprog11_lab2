@@ -20,6 +20,8 @@ protected:
 
 public:
 	WesternDate();
+	WesternDate(const Date& date);
+	WesternDate(Date* dp);
 	virtual ~WesternDate();
 
 	std::string week_day_string(int day) const;

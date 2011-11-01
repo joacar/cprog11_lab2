@@ -48,6 +48,7 @@ const int Date::DAYS_IN_SECS[] =
 // Default constructor sets date to today
 Date::Date() : timestamp( /*k_time(&timestamp)*/ time(&timestamp) ) { clear_cache(); }
 Date::Date(const Date& rhs) : timestamp(rhs.get_unix_timestamp()) { clear_cache(); }
+Date::Date(Date* dp) : timestamp(dp->get_unix_timestamp()) { clear_cache(); }
 
 Date& Date::operator=(const Date& rhs) {
 	if (rhs != *this) {
@@ -145,7 +146,7 @@ int Date::operator-(const Date& other) const {
 
 Date& Date::add_day(int days) {
 	if (days >= -31 && days < 0) {
-		return set_unix_timestamp(timestamp - DAYS_IN_SECS[days-1]);
+		return set_unix_timestamp(timestamp - DAYS_IN_SECS[-1*days-1]);
 	}
 	if (days <= 31) {
 		return set_unix_timestamp(timestamp + DAYS_IN_SECS[days-1]);

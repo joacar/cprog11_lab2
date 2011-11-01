@@ -32,6 +32,7 @@ protected:
 public:
 	Date();
 	Date(const Date& rhs);
+	Date(Date* dp);
 	Date& operator=(const Date& rhs);
 	virtual ~Date();
 

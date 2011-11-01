@@ -10,6 +10,8 @@ bool Gregorian::is_leap_year(int year) const
 }
 
 Gregorian::Gregorian() : WesternDate() {}	
+Gregorian::Gregorian(const Date& rhs) : WesternDate(rhs) {}
+Gregorian::Gregorian(Date* dp) : WesternDate(dp) {}
 Gregorian::Gregorian(int year, int month, int day) {
 	set_unix_timestamp(date2timestamp(year,month,day));
 	cache.year = year;

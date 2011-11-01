@@ -14,6 +14,8 @@ private:
 
 public:
 	Gregorian();
+	Gregorian(const Date& date);
+	Gregorian(Date* dp);
 	Gregorian(int year, int month, int day);
 
 	time_t date2timestamp(int year, int month, int day);
