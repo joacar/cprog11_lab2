@@ -1,5 +1,8 @@
 #include "WesternDate.h"
 
+namespace lab2 
+{
+
 const std::string WesternDate::WEEK_DAYS[] = {
 	"sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"
 };
@@ -40,4 +43,6 @@ bool WesternDate::validate_date(int year, int month, int day) const {
 		} else {
 			throw std::out_of_range("Invalid date!");
 		}
+}
+
 }

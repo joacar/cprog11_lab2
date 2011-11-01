@@ -2,6 +2,8 @@
 #include "WesternDate.h"
 #include "Gregorian.h"
 
+namespace lab2 {
+
 bool Gregorian::is_leap_year(int year) const
 {
 	return (year % 100 == 0 && year % 400 == 0) || (year % 4 == 0);
@@ -37,4 +39,6 @@ void Gregorian::refresh_cache() const
 	cache.month = t->tm_mon + 1;
 	cache.day = t->tm_mday;
 	cache.week_day = t->tm_wday;
+}
+
 }

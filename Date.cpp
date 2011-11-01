@@ -9,6 +9,7 @@
 #define EMPTY -1
 #define DAY_IN_SECONDS 86400
 
+namespace lab2 { 
 const int Date::DAYS_IN_SECS[] = 
 {
 	DAY_IN_SECONDS*1,
@@ -193,6 +194,11 @@ Date& Date::add_month(int months)
 	return *this;
 }
 
+Date& Date::add_month()
+{
+	return add_month(1);
+}
+
 Date& Date::add_year(int years)
 {
 	try {
@@ -218,3 +224,5 @@ bool Date::operator <=(const Date& rhs) const	{ return (*this-rhs) <= 0 ? true :
 bool Date::operator >(const Date& rhs) const { return (*this-rhs) > 0 ? true : false; }
 
 bool Date::operator >=(const Date& rhs) const	{ return (*this-rhs) >= 0 ? true : false; }
+
+}

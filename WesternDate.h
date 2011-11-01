@@ -4,6 +4,9 @@
 #include <stdexcept>
 #include "Date.h"
 
+namespace lab2
+{
+
 class WesternDate : public Date {
 
 protected:
@@ -24,4 +27,5 @@ public:
 	bool validate_date(int year, int month, int day) const;
 };
 
+}
 #endif

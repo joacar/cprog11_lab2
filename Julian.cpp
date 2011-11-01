@@ -3,8 +3,10 @@
 
 #include "WesternDate.h"
 #include "Julian.h"
+namespace lab2 {
 
 Julian::Julian() : WesternDate() {}
+Julian::Julian(const Date& rhs) : WesternDate() {}
 Julian::Julian(int year, int month, int day) {
 	set_unix_timestamp(date2timestamp(year,month,day));
 	cache.year = year;
@@ -44,4 +46,6 @@ void Julian::refresh_cache() const {
 	cache.year = y;
 	cache.month = m;
 	cache.week_day = (int(julian_day() + 1.5)) % 7; // <-- TODO FIX THIS
+}
+
 }

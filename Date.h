@@ -5,6 +5,9 @@
 #include <iostream>
 #include <string>
 
+namespace lab2 
+{
+
 class Date {
 
 private:
@@ -25,6 +28,9 @@ protected:
 	virtual int days_in_a_month(int year, int month) const = 0;
 	virtual bool validate_date(int year, int month, int day) const = 0;
 
+	//TODO
+	//virtual days_per_week() const = 0;
+	//virtual months_per_year() const = 0;
 	void clear_cache() const;
 
 public:
@@ -53,6 +59,7 @@ public:
 	****************/
 	Date& add_day(int days);
 	Date& add_month(int months);
+	Date& add_month();
 	Date& add_year(int years);
 
 	int operator -(const Date& other) const;
@@ -73,4 +80,5 @@ public:
 	bool operator >=(const Date& rhs) const;
 };
 
+}
 #endif

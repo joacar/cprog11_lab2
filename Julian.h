@@ -4,6 +4,9 @@
 #include <time.h>
 #include "WesternDate.h"
 
+namespace lab2 
+{
+
 class Julian : public WesternDate {
 private:
 	// Julian date -> Julian Day Number
@@ -16,6 +19,7 @@ protected:
 public:
 	Julian();
 	Julian(int year, int month, int day);
+	Julian(const Date& rhs);
 
 	time_t date2timestamp(int year, int month, int day);
 	
@@ -24,4 +28,5 @@ public:
 	void refresh_cache() const;
 };
 
+}
 #endif

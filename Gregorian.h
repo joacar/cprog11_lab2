@@ -4,6 +4,9 @@
 #include <time.h>
 #include "WesternDate.h"
 
+namespace lab2 
+{
+
 class Gregorian : public WesternDate {
 
 private:
@@ -18,4 +21,5 @@ public:
 
 };
 
+}
 #endif
