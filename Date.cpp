@@ -10,62 +10,32 @@
 #define DAY_IN_SECONDS 86400
 
 namespace lab2 { 
-const int Date::DAYS_IN_SECS[] = 
-{
-	DAY_IN_SECONDS*1,
-	DAY_IN_SECONDS*2,
-	DAY_IN_SECONDS*3,
-	DAY_IN_SECONDS*4,
-	DAY_IN_SECONDS*5,
-	DAY_IN_SECONDS*6,
-	DAY_IN_SECONDS*7,
-	DAY_IN_SECONDS*8,
-	DAY_IN_SECONDS*9,
-	DAY_IN_SECONDS*10,
-	DAY_IN_SECONDS*11,
-	DAY_IN_SECONDS*12,
-	DAY_IN_SECONDS*13,
-	DAY_IN_SECONDS*14,
-	DAY_IN_SECONDS*15,
-	DAY_IN_SECONDS*16,
-	DAY_IN_SECONDS*17,
-	DAY_IN_SECONDS*18,
-	DAY_IN_SECONDS*19,
-	DAY_IN_SECONDS*20,
-	DAY_IN_SECONDS*21,
-	DAY_IN_SECONDS*22,
-	DAY_IN_SECONDS*23,
-	DAY_IN_SECONDS*24,
-	DAY_IN_SECONDS*25,
-	DAY_IN_SECONDS*26,
-	DAY_IN_SECONDS*27,
-	DAY_IN_SECONDS*28,
-	DAY_IN_SECONDS*29,
-	DAY_IN_SECONDS*30,
-	DAY_IN_SECONDS*31
-};
 
 // Default constructor sets date to today
-Date::Date() : timestamp( k_time(&timestamp) ) { clear_cache(); }
-Date::Date(const Date& rhs) : timestamp(rhs.get_unix_timestamp()) { clear_cache(); }
-Date::Date(Date* dp) : timestamp(dp->get_unix_timestamp()) { clear_cache(); }
+Date::Date() { 
+	time_t timestamp;
+	timestamp = k_time(&timestamp);
+	set_julian_day_number((timestamp/DAY_IN_SECONDS) + 2440587.5);
+}
+Date::Date(const Date& rhs) : julian_day_number(rhs.get_julian_day_number()) { clear_cache(); }
+Date::Date(Date* dp) : julian_day_number(dp->get_julian_day_number()) { clear_cache(); }
 
 Date& Date::operator=(const Date& rhs) {
 	if (rhs != *this) {
-		set_unix_timestamp(rhs.get_unix_timestamp());
+		set_julian_day_number(rhs.get_julian_day_number());
 	}
 	return *this;
 }
 
 Date::~Date() {}
 
-// Return unix timestamp of this Date
-time_t Date::get_unix_timestamp() const {
-	return timestamp;
+// Return Julian Day Number of this Date
+float Date::get_julian_day_number() const {
+	return julian_day_number;
 }
 
-Date& Date::set_unix_timestamp(time_t new_timestamp) {
-	timestamp = new_timestamp;
+Date& Date::set_julian_day_number(float new_julian_day_number) {
+	julian_day_number = new_julian_day_number;
 	clear_cache();
 	return *this;
 }
@@ -77,17 +47,8 @@ void Date::clear_cache() const {
 	cache.week_day = EMPTY;
 }
 
-float Date::julian_day() const {
-	return (timestamp / DAYS_IN_SECS[0]) + 2440587.5;
-}
-
-Date& Date::set_julian_day(float jd) {
-	int ts = (int) ((jd - 2440587.5) * DAYS_IN_SECS[0]);
-	return set_unix_timestamp(ts);
-}
-
 int Date::mod_julian_day() const {
-	return julian_day() - 2400000.5;
+	return (int)(get_julian_day_number() - 2400000.5);
 } 
 
 int Date::year() const {
@@ -140,18 +101,11 @@ int Date::days_this_month() const {
 *** MUTATORS ***
 ****************/
 int Date::operator-(const Date& other) const {
-	time_t difference = timestamp - other.get_unix_timestamp();
-	return difference/DAYS_IN_SECS[0];
+	return julian_day_number - other.get_julian_day_number();
 }
 
 Date& Date::add_day(int days) {
-	if (days >= -31 && days < 0) {
-		return set_unix_timestamp(timestamp - DAYS_IN_SECS[-1*days-1]);
-	}
-	if (days <= 31) {
-		return set_unix_timestamp(timestamp + DAYS_IN_SECS[days-1]);
-	} 
-	return set_unix_timestamp(timestamp + days*DAYS_IN_SECS[0]);
+	return set_julian_day_number(julian_day_number + days);
 }
 
 Date& Date::operator ++() { return add_day(1); }
@@ -192,9 +146,9 @@ Date& Date::add_month(int months)
 	}		
 
 	try {
-		set_unix_timestamp(date2timestamp(year_num, month_num, day()));
+		set_julian_day_number(date2julian_day_number(year_num, month_num, day()));
 	} catch(std::out_of_range& e) {
-		set_unix_timestamp(timestamp + DAYS_IN_SECS[29]);
+		set_julian_day_number(julian_day_number + 30);
 	}
 	return *this;
 }
@@ -212,10 +166,10 @@ Date& Date::add_year()
 Date& Date::add_year(int years)
 {
 	try {
-		set_unix_timestamp(date2timestamp(year()+years, month(), day()));
+		set_julian_day_number(date2julian_day_number(year()+years, month(), day()));
 	} catch(std::out_of_range& e) {
 		// Leap year, 29 Feb -> 28 Feb
-		set_unix_timestamp(date2timestamp(year()+years, month(), day()-1));
+		set_julian_day_number(date2julian_day_number(year()+years, month(), day()-1));
 	}
 	return *this;
 }

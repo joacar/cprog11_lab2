@@ -1,4 +1,3 @@
-#include <time.h>
 #include "westerndate.h"
 #include "gregorian.h"
 
@@ -13,32 +12,25 @@ Gregorian::Gregorian() : WesternDate() {}
 Gregorian::Gregorian(const Date& rhs) : WesternDate(rhs) {}
 Gregorian::Gregorian(Date* dp) : WesternDate(dp) {}
 Gregorian::Gregorian(int year, int month, int day) {
-	set_unix_timestamp(date2timestamp(year,month,day));
+	set_julian_day_number(date2julian_day_number(year,month,day));
 	cache.year = year;
 	cache.month = month;
 	cache.day = day;
 }
 
-time_t Gregorian::date2timestamp(int year, int month, int day)
+float Gregorian::date2julian_day_number(int year, int month, int day)
 {
-	validate_date(year, month, day);
-
-	time_t rawtime = 0;
-	struct tm* given_date = localtime(&rawtime);
-	given_date->tm_year = year - 1900;
-	given_date->tm_mon = month - 1;
-	given_date->tm_mday = day;
-	return mktime(given_date);	
+	validate_date(year,month,day);
+	return 2455867;	
 }
 
 void Gregorian::refresh_cache() const
 {
-	time_t timestamp = get_unix_timestamp();
-	const struct tm* t = localtime(&timestamp);
-	cache.year = t->tm_year + 1900;
-	cache.month = t->tm_mon + 1;
-	cache.day = t->tm_mday;
-	cache.week_day = t->tm_wday;
+	float julian_day_number = get_julian_day_number();
+	cache.year = 2011;
+	cache.month = 11;
+	cache.day = 1;
+	cache.week_day = 2;
 }
 
 }

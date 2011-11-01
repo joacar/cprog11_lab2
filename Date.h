@@ -1,7 +1,6 @@
 #ifndef _DATE_
 #define _DATE_
 
-#include <time.h>
 #include <iostream>
 #include <string>
 
@@ -11,7 +10,7 @@ namespace lab2
 class Date {
 
 private:
-	time_t timestamp;
+	float julian_day_number;
 
 protected:
 	mutable struct cache_struct {
@@ -20,7 +19,7 @@ protected:
 	
 	static const int DAYS_IN_SECS[];
 
-	virtual time_t date2timestamp(int year, int month, int day) = 0;
+	virtual float date2julian_day_number(int year, int month, int day) = 0;
 	virtual void refresh_cache() const = 0;
 
 	virtual std::string week_day_string(int day) const = 0;
@@ -36,11 +35,8 @@ public:
 	Date& operator=(const Date& rhs);
 	virtual ~Date();
 
-	time_t get_unix_timestamp() const;
-	Date& set_unix_timestamp(time_t new_timestamp);
-
-	float julian_day() const;
-	Date& set_julian_day(float jd);
+	float get_julian_day_number() const;
+	Date& set_julian_day_number(float jd);
 	
 	int mod_julian_day() const;
 	int year() const;

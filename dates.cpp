@@ -43,10 +43,10 @@ int main(){
 		std::cout << "It is _NOT_ the same date\n" << std::endl;	
 	} 
 
-	Gregorian first = Gregorian(1858,1,1);
-	std::cout << first << " " << first.week_day_name() << " " << first.mod_julian_day() << std::endl;
-	Gregorian last = Gregorian(2558,12,31);
-	std::cout << last <<  " " << last.week_day_name() << " " << last.mod_julian_day() << std::endl;
+	Julian first = Julian(1858,1,1);
+	std::cout << first << " " << first.week_day_name() << " " << (int)first.get_julian_day_number() << std::endl;
+	Julian last = Julian(2558,12,31);
+	std::cout << last <<  " " << last.week_day_name() << " " << (int)last.get_julian_day_number() << std::endl;
 	
 	return 0;
 }

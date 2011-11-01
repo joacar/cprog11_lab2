@@ -1,7 +1,6 @@
 #ifndef _WESTERN_DATE_
 #define _WESTERN_DATE_
 
-#include <stdexcept>
 #include "date.h"
 
 namespace lab2

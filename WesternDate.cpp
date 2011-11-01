@@ -1,4 +1,5 @@
 #include "westerndate.h"
+#include <stdexcept>
 
 namespace lab2 
 {

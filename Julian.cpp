@@ -9,7 +9,7 @@ Julian::Julian() : WesternDate() {}
 Julian::Julian(const Date& rhs) : WesternDate(rhs) {}
 Julian::Julian(Date* dp) : WesternDate(dp) {}
 Julian::Julian(int year, int month, int day) {
-	set_unix_timestamp(date2timestamp(year,month,day));
+	set_julian_day_number(date2julian_day_number(year,month,day));
 	cache.year = year;
 	cache.month = month;
 	cache.day = day;
@@ -17,11 +17,8 @@ Julian::Julian(int year, int month, int day) {
 
 bool Julian::is_leap_year(int year) const { return year % 4 == 0; } 
 
-time_t Julian::date2timestamp(int year, int month, int day) {
+float Julian::date2julian_day_number(int year, int month, int day) {
 	validate_date(year, month, day);
-	return (time_t) (date2julianday(year,month,day) - 2440587.5)*DAYS_IN_SECS[0];
-}
-float Julian::date2julianday(int year, int month, int day) {
 	if (month < 3) {
 		month = month + 12;
 		year = year - 1;
@@ -31,7 +28,7 @@ float Julian::date2julianday(int year, int month, int day) {
 }
 
 void Julian::refresh_cache() const {
-	float jd = julian_day();
+	float jd = get_julian_day_number();
 	int z = (int) floor(jd - 1721116.5);
 	float r = (jd - 1721116.5) - z;
 	int y = (int) floor((z-0.25)/365.25);
@@ -46,7 +43,7 @@ void Julian::refresh_cache() const {
 	}
 	cache.year = y;
 	cache.month = m;
-	cache.week_day = (int(julian_day() + 1.5)) % 7; // <-- TODO FIX THIS
+	cache.week_day = int((get_julian_day_number() + 1.5)) % 7;
 }
 
 }
