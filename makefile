@@ -8,7 +8,7 @@ test_file	= vector.h
 test_files	= dates.cpp Date.cpp WesternDate.cpp Gregorian.cpp Julian.cpp kattistime.cpp
 
 datetest.out:
-	echo '\t Generates test.out ...'
+	echo Generates test.out ...
 	g++ -g -Wall -o datetest.out datetest.cpp Date.cpp WesternDate.cpp Gregorian.cpp Julian.cpp kattistime.cpp
 clean:
 	rm -f *.o *.out testcode.cpp
