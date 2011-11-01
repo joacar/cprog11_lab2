@@ -1,15 +1,17 @@
 #include <iostream>
+#include <time.h>
 
-#include "Gregorian.h"
-#include "Julian.h"
+#include "gregorian.h"
+#include "julian.h"
+#include "kattistime.h"
 
 using namespace lab2;
 
 int main(){
 	// Set kattistime to right now
-	// time_t time_now;
-	// time(&time_now);
-	// set_k_time(time_now);
+	time_t time_now;
+	time(&time_now);
+	set_k_time(time_now);
 
 	Gregorian gtoday;
 	std::cout << "Gregorian: " << gtoday << std::endl;
@@ -41,16 +43,10 @@ int main(){
 		std::cout << "It is _NOT_ the same date\n" << std::endl;	
 	} 
 
-	std::cout << "Gregorian(2012,2,29), do add_year(-1) followed by add_year(+1)" << std::endl;	
-	Gregorian gleap = Gregorian(2012,2,29);
-	gleap.add_year(-1).add_year(1);
-	std::cout << gleap << std::endl;
-	std::cout << "Gregorian(2011,12,16) - 276 months" << std::endl;	
-	Gregorian gleap2 = Gregorian(2011,12,16);
-	gleap2.add_month(-276);
-	std::cout << gleap2 << std::endl;
-
-
+	Gregorian first = Gregorian(1858,1,1);
+	std::cout << first << " " << first.week_day_name() << " " << first.mod_julian_day() << std::endl;
+	Gregorian last = Gregorian(2558,12,31);
+	std::cout << last <<  " " << last.week_day_name() << " " << last.mod_julian_day() << std::endl;
 	
 	return 0;
 }

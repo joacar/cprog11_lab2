@@ -8,8 +8,12 @@ test_file	= vector.h
 test_files	= dates.cpp Date.cpp WesternDate.cpp Gregorian.cpp Julian.cpp kattistime.cpp
 
 datetest.out:
-	echo Generates test.out ...
+	echo Generates datetest.out ...
 	g++ -g -Wall -o datetest.out datetest.cpp Date.cpp WesternDate.cpp Gregorian.cpp Julian.cpp kattistime.cpp
+
+dates.out:
+	echo Generates dates.out ...
+	g++ -g -Wall -o dates.out dates.cpp Date.cpp WesternDate.cpp Gregorian.cpp Julian.cpp kattistime.cpp
 
 gregorian_tests:
 	echo Generating Gregorian tests
