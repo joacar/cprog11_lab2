@@ -6,7 +6,6 @@
 namespace lab2 {
 
 Julian::Julian() : WesternDate() {}
-Julian::Julian(const Date& rhs) : WesternDate() {}
 Julian::Julian(int year, int month, int day) {
 	set_unix_timestamp(date2timestamp(year,month,day));
 	cache.year = year;
