@@ -163,9 +163,13 @@ Date& Date::operator +=(int days) { return add_day(days); }
 Date& Date::operator -=(int days) { return add_day(-days); }
 
 std::ostream& operator<<(std::ostream & os, const Date& d) {
-	os << d.year() << "-" << d.month() << "-" << d.day();
-	os << " (" << d.week_day_name() << ")";
-	os << " MJD: " << d.mod_julian_day();
+	os << d.year() << "-";
+	if (d.month() < 10)
+		os << "0"; 
+	os << d.month() << "-";
+	if (d.day() < 10)
+		os << "0";
+	os << d.day();
 	return os;
 }	
 

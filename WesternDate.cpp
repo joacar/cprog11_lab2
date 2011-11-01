@@ -43,7 +43,7 @@ int WesternDate::days_in_a_month(int year, int month) const
 
 bool WesternDate::validate_date(int year, int month, int day) const {
 	if (month >= 1 && month <= 12 
-		&& day >= 0 && day <= days_in_a_month(year, month)) {
+		&& day > 0 && day <= days_in_a_month(year, month)) {
 			return true;
 	} else {
 		throw std::out_of_range("Invalid date!");
