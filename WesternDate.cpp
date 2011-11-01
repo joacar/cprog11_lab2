@@ -16,6 +16,9 @@ const int WesternDate::DAYS_IN_A_MONTH[] = {
 	31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
 };
 
+const int WesternDate::NUM_WEEK_DAYS = 7;
+const int WesternDate::NUM_MONTHS = 12;
+
 WesternDate::WesternDate() : Date() {}
 WesternDate::~WesternDate() {}
 
@@ -40,9 +43,19 @@ bool WesternDate::validate_date(int year, int month, int day) const {
 	if (month >= 1 && month <= 12 
 		&& day >= 0 && day <= days_in_a_month(year, month)) {
 			return true;
-		} else {
-			throw std::out_of_range("Invalid date!");
-		}
+	} else {
+		throw std::out_of_range("Invalid date!");
+	}
+}
+
+int WesternDate::days_per_week() const
+{
+	return NUM_WEEK_DAYS;
+}
+
+int WesternDate::months_per_year() const
+{
+	return NUM_MONTHS;
 }
 
 }

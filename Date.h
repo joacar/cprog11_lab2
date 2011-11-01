@@ -27,10 +27,6 @@ protected:
 	virtual std::string month_string(int month) const = 0;
 	virtual int days_in_a_month(int year, int month) const = 0;
 	virtual bool validate_date(int year, int month, int day) const = 0;
-
-	//TODO
-	//virtual days_per_week() const = 0;
-	//virtual months_per_year() const = 0;
 	void clear_cache() const;
 
 public:
@@ -53,6 +49,9 @@ public:
 	std::string week_day_name() const;
 	std::string month_name() const;
 	int days_this_month() const;
+	virtual int days_per_week() const = 0;
+	virtual int months_per_year() const = 0;
+
 
 	/***************
 	*** MUTATORS ***

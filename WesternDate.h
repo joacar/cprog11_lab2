@@ -10,6 +10,8 @@ namespace lab2
 class WesternDate : public Date {
 
 protected:
+	static const int NUM_WEEK_DAYS;
+	static const int NUM_MONTHS;
 	static const std::string WEEK_DAYS[];
 	static const std::string MONTHS[];
 	static const int DAYS_IN_A_MONTH[];
@@ -25,6 +27,9 @@ public:
 
 	int days_in_a_month(int year, int month) const;
 	bool validate_date(int year, int month, int day) const;
+	int days_per_week() const;
+	int months_per_year() const; 
+
 };
 
 }
