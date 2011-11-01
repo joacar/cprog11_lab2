@@ -19,6 +19,7 @@ protected:
 public:
 	Julian();
 	Julian(int year, int month, int day);
+	Julian(const Date& rhs);
 
 	time_t date2timestamp(int year, int month, int day);
 	
