@@ -18,19 +18,34 @@ Gregorian::Gregorian(int year, int month, int day) {
 	cache.day = day;
 }
 
+// http://robm.fastmail.fm/articles/date_class.html
 float Gregorian::date2julian_day_number(int year, int month, int day)
 {
 	validate_date(year,month,day);
-	return 2455867;	
+
+	float a = (14-month)/12;
+	float y = year+4800-a;
+	float m = month + 12*a - 3;
+
+	return day + (153*m+2)/5 + y*365 + y/4 - y/100 + y/400 - 32045;	
 }
 
+// http://robm.fastmail.fm/articles/date_class.html
 void Gregorian::refresh_cache() const
 {
-	float julian_day_number = get_julian_day_number();
-	cache.year = 2011;
-	cache.month = 11;
-	cache.day = 1;
-	cache.week_day = 2;
+	float jd = get_julian_day_number();
+	float a = jd + 32044;
+	float b = (4*a+3)/146097;
+	float c = a - (b*146097)/4;
+
+	float d = (4*c+3)/1461;
+	float e = c - (1461*d)/4;
+	float m = (5*e+2)/153;
+
+	cache.day = (int)(e - (153*m+2)/5 + 1);
+	cache.month = (int)(m + 3 - 12*(m/10));
+	cache.year = (int)(b*100 + d - 4800 + m/10);
+	cache.week_day = 1; // <-- TODO fix this
 }
 
 }
