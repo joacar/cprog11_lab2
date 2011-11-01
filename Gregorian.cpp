@@ -24,8 +24,6 @@ time_t Gregorian::date2timestamp(int year, int month, int day)
 	validate_date(year, month, day);
 
 	time_t rawtime = 0;
-	//k_time(&rawtime);
-	//time(&rawtime);
 	struct tm* given_date = localtime(&rawtime);
 	given_date->tm_year = year - 1900;
 	given_date->tm_mon = month - 1;

@@ -46,7 +46,7 @@ const int Date::DAYS_IN_SECS[] =
 };
 
 // Default constructor sets date to today
-Date::Date() : timestamp( /*k_time(&timestamp)*/ time(&timestamp) ) { clear_cache(); }
+Date::Date() : timestamp( k_time(&timestamp) ) { clear_cache(); }
 Date::Date(const Date& rhs) : timestamp(rhs.get_unix_timestamp()) { clear_cache(); }
 Date::Date(Date* dp) : timestamp(dp->get_unix_timestamp()) { clear_cache(); }
 
