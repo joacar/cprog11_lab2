@@ -1,7 +1,7 @@
 // projektlokala headerfiler
 #include "kattistime.h"     
-#include "Julian.h"         
-#include "Gregorian.h"      
+#include "julian.h"         
+#include "gregorian.h"      
 
 // STL headerfiler
 #include <iostream>
@@ -20,9 +20,9 @@ int main()
 
     ////////////////////////////////////////////////////////////
     // Sätt tiden. OBS skicka inte nedanstående kod till kattis
-    // time_t mytime;
-    // time(&mytime);
-    set_k_time(1320146887);
+    time_t mytime;
+    time(&mytime);
+    set_k_time(mytime);
     ////////////////////////////////////////////////////////////
 
     
