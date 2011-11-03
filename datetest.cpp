@@ -126,12 +126,16 @@ int main()
         {
             Gregorian temp(y, 2, 28);
             Date &e = temp;
+            std::cout << "Before +ee: " << e << std::endl;
             ++e;                                   // lägg till en dag
             if((y % 400 == 0 && e.day() == 29) ||  // skottdag (obs! ETTindexerad)
                (y % 400 != 0 && e.day() == 1))     // ej skottdag
-                {}
+                {
+                    std::cout << "Success: " << e << std::endl;
+                }
             else
                 {
+                    std::cout << "Failure: " << e << std::endl;
                     std::cout << std::endl << "leap day test failed: " << std::endl;
                     std::cout << e.year() << ", "
                               << e.month() << ", "
@@ -142,7 +146,7 @@ int main()
     
     std::cout << std::endl << "All tests were successful." << std::endl;
 
-    // följande ska inte gå att kompilera
+    // följande ska inte gå att kompilera. ** Det gör det inte
 #if 0
     gg.leap_year();             // fel: kan inte komma åt protected/private medlem
     gg = g;                     // fel: kan inte tilldela konstant

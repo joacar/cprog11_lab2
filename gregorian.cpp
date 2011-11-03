@@ -51,8 +51,8 @@ void Gregorian::refresh_cache() const
 	cache.week_day = int(jd) % 7 + 1;*/
 
 	// http://en.wikipedia.org/wiki/Julian_day#Gregorian_calendar_from_Julian_day_number
-	int jd = floor( get_julian_day_number() + 0.5 );
-	int j = jd + 32044;
+	int jdn = floor( get_julian_day_number() + 0.5 );
+	int j = jdn + 32044;
 	int g = j/146097;
 	int dg = j % 146097;
 	int c = (dg/36524 + 1) * 3/4 ;
@@ -68,7 +68,7 @@ void Gregorian::refresh_cache() const
 	cache.day 		= d + 1;
 	cache.month 	= (m + 2) % 12 + 1; 
 	cache.year 		= y - 4800 + (m + 2) / 12;
-	cache.week_day 	= (jd % 7);
+	cache.week_day 	= (jdn % 7);
 
 
 

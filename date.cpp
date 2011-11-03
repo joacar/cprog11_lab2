@@ -126,7 +126,7 @@ std::ostream& operator<<(std::ostream & os, const Date& d) {
 		os << "0";
 	os << d.day();
 	if(DEBUG) {
-		os << " <" << d.week_day_name() << ", "<<d.get_julian_day_number() << " (jd) , " << d.mod_julian_day() << "(mod) > ";
+		os << " <" << d.week_day_name() << ", "<< d.get_julian_day_number() << " (jd) , " << d.mod_julian_day() << "(mod) > ";
 	}
 	return os;
 }	
