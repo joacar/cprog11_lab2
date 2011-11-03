@@ -13,6 +13,8 @@ int main(){
 	time(&time_now);
 	set_k_time(time_now);
 
+	std::cout << "\n*** Starting tests! *** \n";
+
 	Gregorian gtoday;
 	std::cout << "Gregorian: " << gtoday << std::endl;
 	Julian jtoday;
