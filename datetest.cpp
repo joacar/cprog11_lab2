@@ -126,16 +126,16 @@ int main()
         {
             Gregorian temp(y, 2, 28);
             Date &e = temp;
-            std::cout << "Before +ee: " << e << std::endl;
+            //std::cout << "Before +ee: " << e << std::endl;
             ++e;                                   // lägg till en dag
             if((y % 400 == 0 && e.day() == 29) ||  // skottdag (obs! ETTindexerad)
                (y % 400 != 0 && e.day() == 1))     // ej skottdag
                 {
-                    std::cout << "Success: " << e << std::endl;
+                    //std::cout << "Success: " << e << std::endl;
                 }
             else
                 {
-                    std::cout << "Failure: " << e << std::endl;
+                    //std::cout << "Failure: " << e << std::endl;
                     std::cout << std::endl << "leap day test failed: " << std::endl;
                     std::cout << e.year() << ", "
                               << e.month() << ", "
@@ -166,7 +166,9 @@ int main()
     // Error with exception not being caught I think
     Gregorian greg_n(2011,1,31);
     greg_n.add_month();
-    //assert(greg_n.year() == 2011 && greg_n.month() == 3 && greg_n.day() == 1);
+    // JDN = 2455623 here. 2011-03-2.5
+    // after year() JDN = 2455623
+    assert(greg_n.year() == 2011 && greg_n.month() == 3 && greg_n.day() == 1);
 
     // add_month(5) should be equvivalent to add_month() x 5
     // Fails when start date is as above, works otherwise
@@ -185,14 +187,14 @@ int main()
     // Same here as with 2011-01-31.
     Gregorian greg_leap(2012,1,31);
     greg_leap.add_month();
-    //assert(greg_leap.year() == 2012 && greg_leap.month() == 3 && greg_leap.day() == 2);
+    assert(greg_leap.year() == 2012 && greg_leap.month() == 3 && greg_leap.day() == 2);
     
     // Add one month on a leap year on the last of february
     // TODO
     // After refresh_cache() day is set to 1...
     Gregorian greg_leap1(2012,2,29);
     greg_leap1.add_month(1);
-    //assert(greg_leap.year() == 2012 && greg_leap.month() == 3 && greg_leap.day() == 29);
+    assert(greg_leap.year() == 2012 && greg_leap.month() == 3 && greg_leap.day() == 29);
 
     std::cout << "Testing add_year thoroughly..." << std::endl;
     //Leap day
