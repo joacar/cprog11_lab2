@@ -194,7 +194,7 @@ int main()
     // After refresh_cache() day is set to 1...
     Gregorian greg_leap1(2012,2,29);
     greg_leap1.add_month();
-    assert(greg_leap.year() == 2012 && greg_leap.month() == 3 && greg_leap.day() == 29);
+    assert(greg_leap1.year() == 2012 && greg_leap1.month() == 3 && greg_leap1.day() == 29);
 
     std::cout << "Testing add_year thoroughly..." << std::endl;
     //Leap day
