@@ -8,7 +8,7 @@
 
 #define EMPTY -1
 #define DAY_IN_SECONDS 86400
-#define DEBUG 1
+#define DEBUG 0
 
 namespace lab2 { 
 

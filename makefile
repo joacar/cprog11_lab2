@@ -6,9 +6,6 @@ DATE 	= date.cpp westerndate.cpp
 KATTIS 	= kattistime.cpp
 GREGORIAN = gregorian.cpp
 JULIAN = julian.cpp	
-OBJ_ALL	= cprog09lab22c.cpp $(DATE) $(GREGORIAN) $(JULIAN) $(KATTIS)
-OBJ_GREG = cprog09lab22b.cpp $(DATE) $(GREGORIAN) $(KATTIS)
-OBJ_JULI = cprog09lab22a.cpp $(DATE) $(JULIAN) $(KATTIS)
 
 datetest.out:
 	echo Generates datetest.out ...
@@ -20,16 +17,16 @@ dates.out:
 
 gregorian_tests:
 	echo Generating Gregorian tests
-	g++ -g -Wall -o gregorian_tests.out $(DATE) $(GREGORIAN) $(KATTIS)
+	g++ -g -Wall -o gregorian_tests.out cprog09lab22b.cpp $(DATE) $(GREGORIAN) $(KATTIS)
 
 julian_tests:
 	echo Generating Julian tests
-	g++ -g -Wall -o julian_tests.out $(DATE) $(JULIAN) $(KATTIS)
+	g++ -g -Wall -o julian_tests.out cprog09lab22a.cpp $(DATE) $(JULIAN) $(KATTIS)
 	cat oldkattis/lab22a.in | ./julian_tests.out > results/julian_tests.txt
 
 gregorian_and_julian_tests:
 	echo Generating Gregorian and Julian tests
-	g++ -g -Wall -o gregorian_and_julian_tests.out $(OBJ_ALL)
+	g++ -g -Wall -o gregorian_and_julian_tests.out cprog09lab22c.cpp $(DATE) $(KATTIS) $(GREGORIAN) $(JULIAN)
 	cat oldkattis/lab22c.in | ./gregorian_and_julian_tests.out > results/gregorian_and_julian_tests.txt
 
 clean:
