@@ -30,7 +30,7 @@ float Gregorian::date2julian_day_number(int year, int month, int day)
 	float y = year+4800-a;
 	float m = month + 12*a - 3;
 
-	return day + (153*m+2)/5 + y*365 + y/4 - y/100 + y/400 - 32045;	
+	return day + int( (153*m+2)/5 ) + int( y*365 ) + int( y/4 ) - int( y/100 ) + int( y/400 ) - 32045;	
 }
 
 // http://robm.fastmail.fm/articles/date_class.html
@@ -68,7 +68,7 @@ void Gregorian::refresh_cache() const
 	cache.day 		= d + 1;
 	cache.month 	= (m + 2) % 12 + 1; 
 	cache.year 		= y - 4800 + (m + 2) / 12;
-	cache.week_day 	= (jdn % 7);
+	cache.week_day 	= (jdn % 7) + 1;
 
 
 
