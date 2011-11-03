@@ -5,7 +5,7 @@ namespace lab2
 {
 
 const std::string WesternDate::WEEK_DAYS[] = {
-	"sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"
+	"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"
 };
 
 const std::string WesternDate::MONTHS[] = {
