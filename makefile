@@ -2,27 +2,29 @@
 	g++ -m32 -g -Wall $*.cpp -o $*.out
 
 # Change these
-OBJ_DATE 	= date.cpp westerndate.cpp
-OBJ_GJK		= gregorian.cpp julian.cpp kattistime.cpp
-OBJ_ALL	 	= cprog09lab22c.cpp date.cpp westerndate.cpp gregorian.cpp julian.cpp kattistime.cpp
-OBJ_GREG 	= cprog09lab22b.cpp date.cpp westerndate.cpp gregorian.cpp kattistime.cpp
-OBJ_JULI 	= cprog09lab22a.cpp date.cpp westerndate.cpp julian.cpp kattistime.cpp
+DATE 	= date.cpp westerndate.cpp
+KATTIS 	= kattistime.cpp
+GREGORIAN = gregorian.cpp
+JULIAN = julian.cpp	
+OBJ_ALL	= cprog09lab22c.cpp $(DATE) $(GREGORIAN) $(JULIAN) $(KATTIS)
+OBJ_GREG = cprog09lab22b.cpp $(DATE) $(GREGORIAN) $(KATTIS)
+OBJ_JULI = cprog09lab22a.cpp $(DATE) $(JULIAN) $(KATTIS)
 
 datetest.out:
 	echo Generates datetest.out ...
-	g++ -g -Wall -o datetest.out datetest.cpp $(OBJ_DATES) 
+	g++ -g -Wall -o datetest.out datetest.cpp $(DATE) $(JULIAN) $(GREGORIAN) $(KATTIS) 
 
 dates.out:
 	echo Generates dates.out ...
-	g++ -g -Wall -o dates.out dates.cpp $(OBJ_DATE) $(OBJ_GJK)
+	g++ -g -Wall -o dates.out dates.cpp $(DATE) $(GREGORIAN) $(JULIAN) $(KATTIS)
 
 gregorian_tests:
 	echo Generating Gregorian tests
-	g++ -g -Wall -o gregorian_tests.out $(OBJ_GREG)
+	g++ -g -Wall -o gregorian_tests.out $(DATE) $(GREGORIAN) $(KATTIS)
 
 julian_tests:
 	echo Generating Julian tests
-	g++ -g -Wall -o julian_tests.out $(OBJ_JULI)
+	g++ -g -Wall -o julian_tests.out $(DATE) $(JULIAN) $(KATTIS)
 	cat oldkattis/lab22a.in | ./julian_tests.out > julian_tests.txt
 
 gregorian_and_julian_tests:
