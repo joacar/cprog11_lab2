@@ -168,7 +168,7 @@ int main()
     greg_n.add_month();
     // JDN = 2455623 here. 2011-03-2.5
     // after year() JDN = 2455623
-    assert(greg_n.year() == 2011 && greg_n.month() == 3 && greg_n.day() == 1);
+    assert(greg_n.year() == 2011 && greg_n.month() == 3 && greg_n.day() == 2);
 
     // add_month(5) should be equvivalent to add_month() x 5
     // Fails when start date is as above, works otherwise
@@ -187,13 +187,13 @@ int main()
     // Same here as with 2011-01-31.
     Gregorian greg_leap(2012,1,31);
     greg_leap.add_month();
-    assert(greg_leap.year() == 2012 && greg_leap.month() == 3 && greg_leap.day() == 2);
+    assert(greg_leap.year() == 2012 && greg_leap.month() == 3 && greg_leap.day() == 1);
     
     // Add one month on a leap year on the last of february
     // TODO
     // After refresh_cache() day is set to 1...
     Gregorian greg_leap1(2012,2,29);
-    greg_leap1.add_month(1);
+    greg_leap1.add_month();
     assert(greg_leap.year() == 2012 && greg_leap.month() == 3 && greg_leap.day() == 29);
 
     std::cout << "Testing add_year thoroughly..." << std::endl;
