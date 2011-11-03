@@ -77,7 +77,7 @@ int Date::week_day() const {
 	if(cache.week_day == EMPTY) {
 		refresh_cache();
 	}
-	return cache.week_day;
+	return cache.week_day + 1;
 }
 
 std::string Date::week_day_name() const {
