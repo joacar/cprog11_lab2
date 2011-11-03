@@ -25,12 +25,12 @@ gregorian_tests:
 julian_tests:
 	echo Generating Julian tests
 	g++ -g -Wall -o julian_tests.out $(DATE) $(JULIAN) $(KATTIS)
-	cat oldkattis/lab22a.in | ./julian_tests.out > julian_tests.txt
+	cat oldkattis/lab22a.in | ./julian_tests.out > results/julian_tests.txt
 
 gregorian_and_julian_tests:
 	echo Generating Gregorian and Julian tests
 	g++ -g -Wall -o gregorian_and_julian_tests.out $(OBJ_ALL)
-	cat oldkattis/lab22c.in | ./gregorian_and_julian_tests.out > gregorian_and_julian_tests.txt
+	cat oldkattis/lab22c.in | ./gregorian_and_julian_tests.out > results/gregorian_and_julian_tests.txt
 
 clean:
 	rm -f *.o *.out testcode.cpp
