@@ -161,17 +161,11 @@ int main()
     assert(greg2.year() == 2011 && greg2.month() == 3 && greg2.day() == 28);
 
     // Add one month on January on a non-leap year
-    // TODO
-    // Tried this out on http://quasar.as.utexas.edu/BillInfo/JulianDateCalc.html and it works +30 on JDN.
-    // Error with exception not being caught I think
     Gregorian greg_n(2011,1,31);
     greg_n.add_month();
-    // JDN = 2455623 here. 2011-03-2.5
-    // after year() JDN = 2455623
     assert(greg_n.year() == 2011 && greg_n.month() == 3 && greg_n.day() == 2);
 
     // add_month(5) should be equvivalent to add_month() x 5
-    // Fails when start date is as above, works otherwise
     Gregorian greg_t(2011,3,1);
     greg_t.add_month(5);
     Gregorian greg_t1(2011,3,1);
@@ -183,15 +177,11 @@ int main()
 
     // Test leap years
     // add_month() when date is last of january
-    // TODO
-    // Same here as with 2011-01-31.
     Gregorian greg_leap(2012,1,31);
     greg_leap.add_month();
     assert(greg_leap.year() == 2012 && greg_leap.month() == 3 && greg_leap.day() == 1);
     
     // Add one month on a leap year on the last of february
-    // TODO
-    // After refresh_cache() day is set to 1...
     Gregorian greg_leap1(2012,2,29);
     greg_leap1.add_month();
     assert(greg_leap1.year() == 2012 && greg_leap1.month() == 3 && greg_leap1.day() == 29);
@@ -206,7 +196,7 @@ int main()
     leap_day1.add_year(1).add_year(-1);
     assert(leap_day1.year() == 2012 && leap_day1.month() == 2 && leap_day1.day() == 28); 
 
-    ++leap_day1;    // SHOULD WORK!!! and be 2012-02-29 as above
+    ++leap_day1;
     leap_day1.add_year(4);
     assert(leap_day1.year() == 2016 && leap_day1.month() == 2 && leap_day1.day() == 29);
 
@@ -216,6 +206,19 @@ int main()
         leap_day2.add_year();
     }
     assert(leap_day2.year() == 2016 && leap_day2.month() == 2 && leap_day2.day() == 28);
+
+    // Testing leap years for Gregorian
+    set_k_time(109978914);
+
+    for(int y = 1900; y < 2500; y += 100)
+    {
+        
+        try {
+            Gregorian temp(y, 2, 29);   
+        } catch(std::exception& e) {
+                std::cout << "Fail" << std::endl;
+            }
+    }
 
     std::cout << std::endl << "All tests were successful." << std::endl;
 
