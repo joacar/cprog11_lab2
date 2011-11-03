@@ -1,3 +1,5 @@
+#include <math.h>	// really?!?!
+
 #include "westerndate.h"
 #include "gregorian.h"
 
@@ -34,7 +36,7 @@ float Gregorian::date2julian_day_number(int year, int month, int day)
 // http://robm.fastmail.fm/articles/date_class.html
 void Gregorian::refresh_cache() const
 {
-	float jd = get_julian_day_number();
+	/*float jd = get_julian_day_number();
 	float a = jd + 32044;
 	float b = (4*a+3)/146097;
 	float c = a - (b*146097)/4;
@@ -46,7 +48,30 @@ void Gregorian::refresh_cache() const
 	cache.day = (int)(e - (153*m+2)/5 + 1);
 	cache.month = (int)(m + 3 - 12*(m/10));
 	cache.year = (int)(b*100 + d - 4800 + m/10);
-	cache.week_day = int(jd) % 7 + 1;
+	cache.week_day = int(jd) % 7 + 1;*/
+
+	// http://en.wikipedia.org/wiki/Julian_day#Gregorian_calendar_from_Julian_day_number
+	int jd = floor( get_julian_day_number() + 0.5 );
+	int j = jd + 32044;
+	int g = j/146097;
+	int dg = j % 146097;
+	int c = (dg/36524 + 1) * 3/4 ;
+	int dc = dg - c * 36524;
+	int b = dc / 1461;
+	int db = dc % 1461;
+	int a = (db / 365 + 1) * 3 / 4;
+	int da = db - a * 365;
+	int y = g * 400 + c * 100 + b * 4 + a;
+	int m = (da * 5 + 308) / 153 - 2;
+	int d = da - (m + 4) * 153 / 5 + 122;
+
+	cache.day 		= d + 1;
+	cache.month 	= (m + 2) % 12 + 1; 
+	cache.year 		= y - 4800 + (m + 2) / 12;
+	cache.week_day 	= (jd % 7) + 1;
+
+
+
 }
 
 }
