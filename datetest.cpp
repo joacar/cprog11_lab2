@@ -143,7 +143,38 @@ int main()
                     return 1;
                 }
         }
+
+    std::cout << "Testing add_month thoroughly..." << std::endl;
+    Gregorian greg(2011,9,1);
+    greg.add_month();
+    assert(greg.year() == 2011 && greg.month() == 10 && greg.day() == 1);
     
+    Gregorian greg1(2011,5,31);
+    greg1.add_month();
+    assert(greg1.year() == 2011 && greg1.month() == 6 && greg1.day() == 30);
+
+    // add_month() when date is last of january
+    // leap year
+    Gregorian greg_leap(2012,1,31);
+    greg_leap.add_month();
+    assert(greg_leap.year() == 2012 && greg_leap.month() == 3 && greg_leap.day() == 2);
+    // no leap year
+    Gregorian greg_n(2011,1,31);
+    greg_n.add_month();
+    assert(greg_n.year() == 2011 && greg_n.month() == 3 && greg_n.day() == 1);
+
+    Gregorian greg_t(2011,1,31);
+    greg_t.add_month(5);
+    Gregorian greg_t1(2011,1,31);
+    for(int i = 0; i < 5; i++)
+    {
+        greg_t1.add_month();
+    }
+    assert(greg_t1 == greg_t);
+
+    std::cout << "Testing add_year thoroughly..." << std::endl;
+
+
     std::cout << std::endl << "All tests were successful." << std::endl;
 
     // följande ska inte gå att kompilera. ** Det gör det inte
