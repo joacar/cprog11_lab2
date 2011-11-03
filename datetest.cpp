@@ -192,10 +192,28 @@ int main()
     // After refresh_cache() day is set to 1...
     Gregorian greg_leap1(2012,2,29);
     greg_leap1.add_month(1);
-    assert(greg_leap.year() == 2012 && greg_leap.month() == 3 && greg_leap.day() == 29);
+    //assert(greg_leap.year() == 2012 && greg_leap.month() == 3 && greg_leap.day() == 29);
 
     std::cout << "Testing add_year thoroughly..." << std::endl;
+    //Leap day
+    Gregorian leap_day(2012,2,29);
+    leap_day.add_year();
+    assert(leap_day.year() == 2013 && leap_day.month() == 2 && leap_day.day() == 28);
 
+    Gregorian leap_day1(2012,2,29);
+    leap_day1.add_year(1).add_year(-1);
+    assert(leap_day1.year() == 2012 && leap_day1.month() == 2 && leap_day1.day() == 28); 
+
+    ++leap_day1;    // SHOULD WORK!!! and be 2012-02-29 as above
+    leap_day1.add_year(4);
+    assert(leap_day1.year() == 2016 && leap_day1.month() == 2 && leap_day1.day() == 29);
+
+    Gregorian leap_day2(2012,2,29);
+    for(int i = 0; i < 4; i++)
+    {
+        leap_day2.add_year();
+    }
+    assert(leap_day2.year() == 2016 && leap_day2.month() == 2 && leap_day2.day() == 28);
 
     std::cout << std::endl << "All tests were successful." << std::endl;
 
