@@ -45,7 +45,7 @@ void Gregorian::refresh_cache() const
 	cache.day = (int)(e - (153*m+2)/5 + 1);
 	cache.month = (int)(m + 3 - 12*(m/10));
 	cache.year = (int)(b*100 + d - 4800 + m/10);
-	cache.week_day = 1; // <-- TODO fix this
+	cache.week_day = int(jd) % 7 + 1;
 }
 
 }
