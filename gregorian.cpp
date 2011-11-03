@@ -3,6 +3,7 @@
 
 namespace lab2 {
 
+// http://en.wikipedia.org/wiki/Leap_year#Algorithm
 bool Gregorian::is_leap_year(int year) const
 {
 	return (year % 100 == 0 && year % 400 == 0) || (year % 4 == 0);
