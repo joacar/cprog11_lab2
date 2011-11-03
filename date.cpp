@@ -8,6 +8,7 @@
 
 #define EMPTY -1
 #define DAY_IN_SECONDS 86400
+#define DEBUG 1
 
 namespace lab2 { 
 
@@ -124,6 +125,9 @@ std::ostream& operator<<(std::ostream & os, const Date& d) {
 	if (d.day() < 10)
 		os << "0";
 	os << d.day();
+	if(DEBUG) {
+		os << " <" << d.week_day_name() << ", "<<d.get_julian_day_number() << " (jd) , " << d.mod_julian_day() << "(mod) > ";
+	}
 	return os;
 }	
 
