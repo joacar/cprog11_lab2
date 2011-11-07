@@ -10,7 +10,11 @@
 #define DAY_IN_SECONDS 86400
 #define DEBUG 0
 
-namespace lab2 { 
+namespace lab2 {
+
+int Date::round(float f) {
+	return floor(f + 0.5);
+}
 
 // Default constructor sets date to today
 Date::Date() { 
@@ -49,7 +53,8 @@ void Date::clear_cache() const {
 }
 
 int Date::mod_julian_day() const {
-	return (int)(get_julian_day_number() - 2400000.5);
+	float mjd = get_julian_day_number() - 2400000.5;
+	return round(mjd);  
 } 
 
 int Date::year() const {

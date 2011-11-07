@@ -69,9 +69,6 @@ void Gregorian::refresh_cache() const
 	cache.month 	= (m + 2) % 12 + 1; 
 	cache.year 		= y - 4800 + (m + 2) / 12;
 	cache.week_day 	= (jdn % 7);
-
-
-
 }
 
 }

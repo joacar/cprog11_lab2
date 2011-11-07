@@ -18,6 +18,7 @@ protected:
 	} cache;
 	
 	static const int DAYS_IN_SECS[];
+	static int round(float f);
 
 	virtual float date2julian_day_number(int year, int month, int day) = 0;
 	virtual void refresh_cache() const = 0;
