@@ -13,7 +13,7 @@
 namespace lab2 {
 
 int Date::round(float f) {
-	return floor(f + 0.5);
+	return (f > 0.0) ? floor(f + 0.5) : ceil(f - 0.5);
 }
 
 // Default constructor sets date to today

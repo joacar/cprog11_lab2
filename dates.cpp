@@ -45,7 +45,9 @@ int main(){
 	// 	std::cout << "It is _NOT_ the same date\n" << std::endl;	
 	// } 
 
-	Julian last = Julian(1858,1,1);
-	std::cout << last.mod_julian_day() << std::endl;
+	Julian j1 = Julian(1858,1,1);
+	std::cout << j1.mod_julian_day() << std::endl;
+	Julian j2 = Julian(1858,3,1);
+	std::cout << j2.mod_julian_day() << std::endl;
 	return 0;
 }
