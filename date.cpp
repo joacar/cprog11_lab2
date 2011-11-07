@@ -7,12 +7,12 @@
 #include "date.h"
 
 #define EMPTY -1
-#define DAY_IN_SECONDS 86400
+#define DAY_IN_SECONDS 86400.0
 #define DEBUG 0
 
 namespace lab2 {
 
-int Date::round(float f) {
+int Date::round(double f) {
 	return (f > 0.0) ? floor(f + 0.5) : ceil(f - 0.5);
 }
 
@@ -35,11 +35,11 @@ Date& Date::operator=(const Date& rhs) {
 Date::~Date() {}
 
 // Return Julian Day Number of this Date
-float Date::get_julian_day_number() const {
+double Date::get_julian_day_number() const {
 	return julian_day_number;
 }
 
-Date& Date::set_julian_day_number(float new_julian_day_number) {
+Date& Date::set_julian_day_number(double new_julian_day_number) {
 	julian_day_number = new_julian_day_number;
 	clear_cache();
 	return *this;
@@ -53,7 +53,7 @@ void Date::clear_cache() const {
 }
 
 int Date::mod_julian_day() const {
-	float mjd = get_julian_day_number() - 2400000.5;
+	double mjd = get_julian_day_number() - 2400000.5;
 	return round(mjd);  
 } 
 

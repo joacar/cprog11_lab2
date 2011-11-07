@@ -49,5 +49,9 @@ int main(){
 	std::cout << j1.mod_julian_day() << std::endl;
 	Julian j2 = Julian(1858,3,1);
 	std::cout << j2.mod_julian_day() << std::endl;
+	Julian j3 = Julian(2558,3,1);
+	std::cout << j3.mod_julian_day() << std::endl;
+	Gregorian g1 = Gregorian(1900,2,28);
+	std::cout << g1 << std::endl;
 	return 0;
 }

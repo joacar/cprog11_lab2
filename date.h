@@ -10,7 +10,7 @@ namespace lab2
 class Date {
 
 private:
-	float julian_day_number;
+	double julian_day_number;
 
 protected:
 	mutable struct cache_struct {
@@ -18,9 +18,9 @@ protected:
 	} cache;
 	
 	static const int DAYS_IN_SECS[];
-	static int round(float f);
+	static int round(double f);
 
-	virtual float date2julian_day_number(int year, int month, int day) = 0;
+	virtual double date2julian_day_number(int year, int month, int day) = 0;
 	virtual void refresh_cache() const = 0;
 
 	virtual std::string week_day_string(int day) const = 0;
@@ -36,8 +36,8 @@ public:
 	Date& operator=(const Date& rhs);
 	virtual ~Date();
 
-	float get_julian_day_number() const;
-	Date& set_julian_day_number(float jd);
+	double get_julian_day_number() const;
+	Date& set_julian_day_number(double jd);
 	
 	int mod_julian_day() const;
 	int year() const;

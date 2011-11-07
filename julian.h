@@ -19,7 +19,7 @@ public:
 
 	// Julian date -> Julian Day Number
 	// from http://mysite.verizon.net/aesir_research/date/date0.htm
-	float date2julian_day_number(int year, int month, int day);
+	double date2julian_day_number(int year, int month, int day);
 	
 	// Julian day number -> Julian date
 	// from http://mysite.verizon.net/aesir_research/date/date0.htm

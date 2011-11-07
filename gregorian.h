@@ -17,7 +17,7 @@ public:
 	Gregorian(Date* dp);
 	Gregorian(int year, int month, int day);
 
-	float date2julian_day_number(int year, int month, int day);
+	double date2julian_day_number(int year, int month, int day);
 	void refresh_cache() const;
 };
 

@@ -17,20 +17,21 @@ Julian::Julian(int year, int month, int day) {
 
 bool Julian::is_leap_year(int year) const { return year % 4 == 0; } 
 
-float Julian::date2julian_day_number(int year, int month, int day) {
+double Julian::date2julian_day_number(int year, int month, int day) {
 	validate_date(year, month, day);
 	if (month < 3) {
 		month = month + 12;
 		year = year - 1;
 	}
-	float julian_day = day + (153*month-457)/5 + 365*year + year/4.0 + 1721116.5;
+
+	double julian_day = day + (int)((153*month-457)/5.0) + 365.25*year + 1721116.5;
 	return julian_day;
 }
 
 void Julian::refresh_cache() const {
-	float jd = get_julian_day_number();
+	double jd = get_julian_day_number();
 	int z = (int) floor(jd - 1721116.5);
-	float r = (jd - 1721116.5) - z;
+	double r = (jd - 1721116.5) - z;
 	int y = (int) floor((z-0.25)/365.25);
 	int c = (int) (z - floor(365.25*y));
 	int m = (5*c + 456)/153;
