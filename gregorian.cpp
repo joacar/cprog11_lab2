@@ -1,14 +1,18 @@
-#include <math.h>	// really?!?!
+#include <math.h>
 
 #include "westerndate.h"
 #include "gregorian.h"
+#include "date_conversions.h"
 
 namespace lab2 {
 
 // http://en.wikipedia.org/wiki/Leap_year#Algorithm
 bool Gregorian::is_leap_year(int year) const
 {
-	return (year % 4 == 0 && year % 100 == 0 && year % 400 == 0);
+	if(year % 100 == 0)
+		return (year % 4 == 0 && year % 400 == 0);
+	else 
+		return (year % 4 == 0);	
 }
 
 Gregorian::Gregorian() : WesternDate() {}	
@@ -25,12 +29,12 @@ Gregorian::Gregorian(int year, int month, int day) {
 double Gregorian::date2julian_day_number(int year, int month, int day)
 {
 	validate_date(year,month,day);
+	return DateConversions::ymd_to_jdn(year,month,day,0);
+	// double a = (14-month)/12;
+	// double y = year+4800-a;
+	// double m = month + 12*a - 3;
 
-	double a = (14-month)/12;
-	double y = year+4800-a;
-	double m = month + 12*a - 3;
-
-	return day + int( (153*m+2)/5.0 ) + int( y*365 ) + int( y/4.0 ) - int( y/100.0 ) + int( y/400.0 ) - 32045;	
+	// return day + int( (153*m+2)/5.0 ) + int( y*365 ) + int( y/4.0 ) - int( y/100.0 ) + int( y/400.0 ) - 32045;	
 }
 
 // http://robm.fastmail.fm/articles/date_class.html
@@ -52,23 +56,25 @@ void Gregorian::refresh_cache() const
 
 	// http://en.wikipedia.org/wiki/Julian_day#Gregorian_calendar_from_Julian_day_number
 	int jdn = floor( get_julian_day_number() + 0.5 );
-	int j = jdn + 32044;
-	int g = j/146097;
-	int dg = j % 146097;
-	int c = (dg/36524 + 1) * 3/4 ;
-	int dc = dg - c * 36524;
-	int b = dc / 1461;
-	int db = dc % 1461;
-	int a = (db / 365 + 1) * 3 / 4;
-	int da = db - a * 365;
-	int y = g * 400 + c * 100 + b * 4 + a;
-	int m = (da * 5 + 308) / 153 - 2;
-	int d = da - (m + 4) * 153 / 5 + 122;
+	// int j = jdn + 32044;
+	// int g = j/146097;
+	// int dg = j % 146097;
+	// int c = (dg/36524 + 1) * 3/4 ;
+	// int dc = dg - c * 36524;
+	// int b = dc / 1461;
+	// int db = dc % 1461;
+	// int a = (db / 365 + 1) * 3 / 4;
+	// int da = db - a * 365;
+	// int y = g * 400 + c * 100 + b * 4 + a;
+	// int m = (da * 5 + 308) / 153 - 2;
+	// int d = da - (m + 4) * 153 / 5 + 122;
 
-	cache.day 		= d + 1;
-	cache.month 	= (m + 2) % 12 + 1; 
-	cache.year 		= y - 4800 + (m + 2) / 12;
+	// cache.day 		= d + 1;
+	// cache.month 	= (m + 2) % 12 + 1; 
+	// cache.year 		= y - 4800 + (m + 2) / 12;
+	
 	cache.week_day 	= (jdn % 7);
+	DateConversions::jdn_to_ymd(jdn, &cache.year, &cache.month, &cache.day, 0);
 }
 
 }
