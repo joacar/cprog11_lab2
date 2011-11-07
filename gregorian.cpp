@@ -8,7 +8,7 @@ namespace lab2 {
 // http://en.wikipedia.org/wiki/Leap_year#Algorithm
 bool Gregorian::is_leap_year(int year) const
 {
-	return (year % 100 == 0 && year % 400 == 0) || (year % 4 == 0);
+	return (year % 4 == 0 && year % 100 == 0 && year % 400 == 0);
 }
 
 Gregorian::Gregorian() : WesternDate() {}	
@@ -22,28 +22,28 @@ Gregorian::Gregorian(int year, int month, int day) {
 }
 
 // http://robm.fastmail.fm/articles/date_class.html
-float Gregorian::date2julian_day_number(int year, int month, int day)
+double Gregorian::date2julian_day_number(int year, int month, int day)
 {
 	validate_date(year,month,day);
 
-	float a = (14-month)/12;
-	float y = year+4800-a;
-	float m = month + 12*a - 3;
+	double a = (14-month)/12;
+	double y = year+4800-a;
+	double m = month + 12*a - 3;
 
-	return day + int( (153*m+2)/5 ) + int( y*365 ) + int( y/4 ) - int( y/100 ) + int( y/400 ) - 32045;	
+	return day + int( (153*m+2)/5.0 ) + int( y*365 ) + int( y/4.0 ) - int( y/100.0 ) + int( y/400.0 ) - 32045;	
 }
 
 // http://robm.fastmail.fm/articles/date_class.html
 void Gregorian::refresh_cache() const
 {
-	/*float jd = get_julian_day_number();
-	float a = jd + 32044;
-	float b = (4*a+3)/146097;
-	float c = a - (b*146097)/4;
+	/*double jd = get_julian_day_number();
+	double a = jd + 32044;
+	double b = (4*a+3)/146097;
+	double c = a - (b*146097)/4;
 
-	float d = (4*c+3)/1461;
-	float e = c - (1461*d)/4;
-	float m = (5*e+2)/153;
+	double d = (4*c+3)/1461;
+	double e = c - (1461*d)/4;
+	double m = (5*e+2)/153;
 
 	cache.day = (int)(e - (153*m+2)/5 + 1);
 	cache.month = (int)(m + 3 - 12*(m/10));
