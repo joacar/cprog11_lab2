@@ -17,11 +17,11 @@ Date::Date() :
 	julian_day_number((k_time(NULL) / DAY_IN_SECONDS) + 2440588) { clear_cache(); } //added 0.5
 
 Date::Date(const Date& d) :
-	cache(d.cache),
+	cache( cache ),
 	julian_day_number(d.julian_day_number) { clear_cache(); }
 
 Date::Date(int jdn) :
-	cache(cache),
+	cache( cache ),
 	julian_day_number(jdn) { clear_cache(); }
 
 Date::~Date() {};
