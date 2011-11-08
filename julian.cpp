@@ -1,36 +1,44 @@
+#include "julian.h"
+
 #include <time.h>
 #include <math.h>
+#include <stdexcept>
 
-#include "westerndate.h"
-#include "julian.h"
 namespace lab2 {
 
 Julian::Julian() : WesternDate() {}
-Julian::Julian(const Date& rhs) : WesternDate(rhs) {}
-Julian::Julian(Date* dp) : WesternDate(dp) {}
+Julian::Julian(const Date& d) : WesternDate(d) {}
 Julian::Julian(int year, int month, int day) {
-	set_julian_day_number(date2julian_day_number(year,month,day));
+	date2julian_day_number(year,month,day);
+	
+	if(!validate_date(year, month, day)) {
+		throw std::out_of_range("Invalid range");
+	}
+
+	// TODO better way to set below?
 	cache.year = year;
 	cache.month = month;
 	cache.day = day;
+	//cache.week_day = week_day();
 }
 
-bool Julian::is_leap_year(int year) const { return year % 4 == 0; } 
-
-float Julian::date2julian_day_number(int year, int month, int day) {
-	validate_date(year, month, day);
+void Julian::date2julian_day_number(int year, int month, int day) {
+	
 	if (month < 3) {
 		month = month + 12;
 		year = year - 1;
 	}
-	float julian_day = day + (153*month-457)/5 + 365*year + year/4.0 + 1721116.5;
-	return julian_day;
+	julian_day_number = day + (153*month-457)/5 + 365*year + (int)year/4 + 1721117; // added 0.5
 }
 
 void Julian::refresh_cache() const {
-	float jd = get_julian_day_number();
-	int z = (int) floor(jd - 1721116.5);
-	float r = (jd - 1721116.5) - z;
+
+	if(cache.year != -1 && cache.month != -1 && cache.day != -1) 
+		return;
+	
+	float jdn = julian_day_number;
+	int z = (int) floor(jdn - 1721116.5);
+	float r = (jdn - 1721116.5) - z;
 	int y = (int) floor((z-0.25)/365.25);
 	int c = (int) (z - floor(365.25*y));
 	int m = (5*c + 456)/153;
@@ -43,7 +51,7 @@ void Julian::refresh_cache() const {
 	}
 	cache.year = y;
 	cache.month = m;
-	cache.week_day = int((get_julian_day_number() + 1.5)) % 7;
+	cache.week_day = int((jdn + 1.5)) % 7;
 }
 
 }
