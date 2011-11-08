@@ -10,15 +10,15 @@ namespace lab2 {
 
 template <class T>
 Calendar<T>::Calendar() :
-	date(),
-	events() { }
+	date(), 
+	events() {}
 
 template <class T>
 template<class U> Calendar<T>::Calendar(const Calendar<U>& cal) :
 	date( cal.date ),
 	events() 
 	{
-		typename std::map< T, std::string>::iterator it;
+		typename std::map< U, std::string >::iterator it;
 		it = cal.events.begin();
 
 		while(++it != cal.events.end()) {		// prefix or postfix?
@@ -34,7 +34,7 @@ template<class U> T& Calendar<T>::operator=(const Calendar<U>& rhs) {
 	if(*this != rhs) {
 		date = rhs.date;
 
-		typename std::map< T, std::string>::iterator it;
+		typename std::map< U, std::string>::iterator it;
 		it = rhs.events.begin();
 
 		while(++it != rhs.events.end() ) {		// prefix or postfix?

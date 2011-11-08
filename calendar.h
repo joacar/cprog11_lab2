@@ -28,12 +28,12 @@ class Calendar {
 
 		template<class U> T& operator=(const Calendar<U>& rhs);
 
-		friend std::ostream& operator<<(std::ostream& os, const Calendar<T>& cal);
+		template<class U> friend std::ostream& operator<<(std::ostream& os, const Calendar<U>& cal);
 
 		bool set_date(int, int, int);
 		bool add_event(std::string event, int = -1, int = -1, int = -1);
 		bool remove_event(std::string event, int = -1, int = -1, int = -1);
-}; 
+};
 
 }
 #endif
