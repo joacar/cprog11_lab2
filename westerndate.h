@@ -26,8 +26,6 @@ public:
 
 	void add_month(int = 1);
 	void add_year(int = 1);
-	//void add_month();
-	//void add_year();
 };
 
 }

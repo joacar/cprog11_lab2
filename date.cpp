@@ -6,10 +6,14 @@
 #include <math.h>
 
 #define EMPTY -1
-#define DAY_IN_SECONDS 86400
+#define DAY_IN_SECONDS 86400.0
 #define DEBUG 0
 
-namespace lab2 { 
+namespace lab2 {
+
+int Date::round(double f) {
+	return (f > 0.0) ? floor(f + 0.5) : ceil(f - 0.5);
+}
 
 // Default constructor sets date to today
 Date::Date() :
@@ -24,9 +28,7 @@ Date::Date(int jdn) :
 	cache(cache),
 	julian_day_number(jdn) { clear_cache(); }
 
-Date::~Date() {}
-
-void Date::set_julian_day_number(int new_julian_day_number) {
+Date& Date::set_julian_day_number(double new_julian_day_number) {
 	julian_day_number = new_julian_day_number;
 	clear_cache();
 }
