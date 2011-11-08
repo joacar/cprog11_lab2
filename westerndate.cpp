@@ -52,29 +52,32 @@ bool WesternDate::validate_date(int year, int month, int day) const {
 }
 
 void WesternDate::add_month(int months) {
-	int year_num = year();
-	int month_num = month() + months;
+	int nr_months = (months < 0 ? -1*months : months);
+	int step = (months < 0 ? -1 : 1);
 
-	// Adjust if rolling over year boundaries
-	// Positive case
-	if(month_num > 12) {
-		year_num += month_num/12;
-		month_num = month_num % 12;
+	for(int i = 0; i < nr_months; ++i) {
+		int year_ = year();
+		int month_ = month();
+		int day_ = day();
+
+		month_ += step;
+
+		if(month_ > months_per_year()) {
+			year_ += 1;
+			month_ = 1;
+		}
+		if(month_ <= 0) {
+			year_ -= 1;
+			month_ = months_per_year();
+		}
+
+		if(day_ > days_in_a_month(year_, month_)) {
+			day_ = 30;
+		}
+
+		date2julian_day_number( year_, month_, day_ );
+		clear_cache();
 	}
-
-	// Negative case
-	if(months < 0) {
-		year_num += month_num/12;
-		month_num = (month_num % 12) + 12;
-	}		
-
-	int day_num = day();
-	if(!validate_date( year_num, month_num, day_num ) ) {
-		day_num = 30;
-	}
-
-	date2julian_day_number( year_num, month_num, day_num );
-	set_julian_day_number( julian_day_number );
 }
 
 void WesternDate::add_year(int years) {
@@ -82,12 +85,12 @@ void WesternDate::add_year(int years) {
 	int month_ = month();
 	int day_ = day();
 
-	if(!validate_date(year_, month_, day_)) {
+	if(day_ > days_in_a_month(year_, month_)) {		
 		day_ -= 1;
 	}
 
 	date2julian_day_number( year_, month_, day_);
-	set_julian_day_number( julian_day_number );	
+	clear_cache();
 }
 
 }
