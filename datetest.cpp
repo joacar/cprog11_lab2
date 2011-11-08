@@ -266,18 +266,41 @@ int main()
         try {
             Gregorian temp(y, 2, 29);
         } catch(std::exception& e) {
-                std::cout << y << "-02-29 exception in constructor" << std::endl;
+                std::cout << "\t" << y << "-02-29 exception in constructor" << std::endl;
             }
     }
 
     std::cout << std::endl << "Testing kattis error messages" << std::endl;
+    ////////////////////////////////////////////////////////////
+    // Sätt tiden. OBS skicka inte nedanstående kod till kattis
+    time_t my_time;
+    time(&my_time);
+    set_k_time(my_time);
+    ////////////////////////////////////////////////////////////
+
+    // *** lab22b
+    // "we think we have..."
+    Gregorian gk(1992,2,29);
+    std::cout << gk << " -> gk.add_month(29) -> ";
+    gk.add_month(29);
+    std::cout << gk << std::endl;
+    assert(gk.year() == 1994
+        && gk.month() == 7
+        && gk.day() == 28);
+    
     // Below date and minus -28 months does not work
     Julian jk(1992,2,29);
+    Julian d_jk(1992,2,29);
     std::cout << jk << std::endl;
     jk.add_month(-1);
-    std::cout << "jk.add_month(-1): " << jk << std::endl;
-    jk.add_month(-27);
-    std::cout << "jk.add_month(-27): " <<jk << std::endl;
+    std::cout << "jk.add_month(-1):\t" << jk << std::endl;
+    jk.add_month(-1);
+    std::cout << "jk.add_month(-1):\t" << jk << std::endl;
+    jk.add_month(-26);
+    std::cout << "jk.add_month(-26):\t" <<jk << std::endl;
+    d_jk.add_month(-28);
+    std::cout << "d_jk.add_month(-28):\t" << d_jk << std::endl;
+    assert(d_jk == jk);
 
     assert(jk.year() == 1989
         && jk.month() == 10
