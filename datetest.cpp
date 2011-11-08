@@ -25,6 +25,54 @@ int main()
     set_k_time(mytime);
     ////////////////////////////////////////////////////////////
 
+    std::cout << std::endl << "\tTests from lab2.pdf" << std::endl;
+    std::cout << "------------------------------------" << std::endl;
+    Gregorian gtoday_1;
+    std::cout << "Gregorian: " << gtoday_1 << std::endl;
+    Julian jtoday_1;
+    std::cout << "Julian: " << jtoday_1 << std::endl;
+
+    std::cout << "Today it is " << gtoday_1 << " gregorian and " << jtoday_1 << " julian";
+    if (gtoday_1 - jtoday_1 == 0) std::cout << ". It is the same date" << std::endl;
+    gtoday_1 = jtoday_1;
+    if (gtoday_1 - jtoday_1 == 0) std::cout << "It is still the same date" << std::endl;
+
+    std::cout << std::endl << "Test mod_julian_day" << std::endl;
+    std::cout << "Gregorian 1858-11-17 and Julian 1858-11-05" << std::endl;
+    Gregorian g_mod(1858, 11, 17);
+    assert(g_mod.year() == 1858
+        && g_mod.month() == 11
+        && g_mod.day() == 17);
+
+    Julian j_mod(1858, 11, 5);
+    assert(j_mod.year() == 1858
+        && j_mod.month() == 11
+        && j_mod.day() == 5);
+
+    assert(j_mod.mod_julian_day() == 0);
+    assert(g_mod.mod_julian_day() == 0);
+
+    --g_mod; --j_mod;
+    assert(j_mod.mod_julian_day() == -1);
+    assert(g_mod.mod_julian_day() == -1);
+    ++g_mod; ++j_mod;
+    assert(j_mod.mod_julian_day() == 0);
+    assert(g_mod.mod_julian_day() == 0);
+    ++g_mod; ++j_mod;
+    assert(j_mod.mod_julian_day() == 1);
+    assert(g_mod.mod_julian_day() == 1);
+    
+
+    std::cout << std::endl << "Test first and last" << std::endl;
+    Julian first = Julian(1858,1,1);
+    std::cout << first << " " << first.week_day_name() << std::endl;
+    Julian last = Julian(2558,12,31);
+    std::cout << last <<  " " << last.week_day_name() << std::endl;
+
+    std::cout << "------------------------------------" << std::endl;
+    
+    std::cout << "\tdatetest" << std::endl;
+    std::cout << "------------------------------------" << std::endl;
     
     Julian tj;                  // ok: defaultkonstruktor ger dagens datum
     Gregorian gtoday;           // ok för gregorian också
@@ -42,7 +90,7 @@ int main()
       Date & d1 = j1;
       Julian j2(d1);
       Date * dp = &j2;
-      Julian j3(dp);
+      //Julian j3(dp);
     }
      
     time_t tp;
@@ -193,7 +241,8 @@ int main()
     assert(leap_day.year() == 2013 && leap_day.month() == 2 && leap_day.day() == 28);
 
     Gregorian leap_day1(2012,2,29);
-    leap_day1.add_year(1).add_year(-1);
+    leap_day1.add_year(1);
+    leap_day1.add_year(-1);
     assert(leap_day1.year() == 2012 && leap_day1.month() == 2 && leap_day1.day() == 28); 
 
     ++leap_day1;
@@ -207,6 +256,7 @@ int main()
     }
     assert(leap_day2.year() == 2016 && leap_day2.month() == 2 && leap_day2.day() == 28);
 
+    std::cout << "Testing greg constructor with leap day" << std::endl;
     // Testing leap years for Gregorian
     set_k_time(109978914);
 
@@ -214,11 +264,24 @@ int main()
     {
         
         try {
-            Gregorian temp(y, 2, 29);   
+            Gregorian temp(y, 2, 29);
         } catch(std::exception& e) {
-                std::cout << "Fail" << std::endl;
+                std::cout << y << "-02-29 exception in constructor" << std::endl;
             }
     }
+
+    std::cout << std::endl << "Testing kattis error messages" << std::endl;
+    // Below date and minus -28 months does not work
+    Julian jk(1992,2,29);
+    std::cout << jk << std::endl;
+    jk.add_month(-1);
+    std::cout << "jk.add_month(-1): " << jk << std::endl;
+    jk.add_month(-27);
+    std::cout << "jk.add_month(-27): " <<jk << std::endl;
+
+    assert(jk.year() == 1989
+        && jk.month() == 10
+        && jk.day() == 27);
 
     std::cout << std::endl << "All tests were successful." << std::endl;
 

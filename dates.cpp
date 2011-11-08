@@ -46,9 +46,9 @@ int main(){
 	} 
 
 	Julian first = Julian(1858,1,1);
-	std::cout << first << " " << first.week_day_name() << " " << (int)first.get_julian_day_number() << std::endl;
+	std::cout << first << " " << first.week_day_name(); // << " " << (int)first.julian_day_number << std::endl;
 	Julian last = Julian(2558,12,31);
-	std::cout << last <<  " " << last.week_day_name() << " " << (int)last.get_julian_day_number() << std::endl;
+	std::cout << last <<  " " << last.week_day_name(); // << " " << (int)last.julian_day_number << std::endl;
 	
 	return 0;
 }
