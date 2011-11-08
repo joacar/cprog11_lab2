@@ -6,6 +6,7 @@
 #include "kattistime.h"
 
 using namespace lab2;
+using namespace std;
 
 int main(){
 	// Set kattistime to right now
@@ -13,63 +14,11 @@ int main(){
 	time(&time_now);
 	set_k_time(time_now);
 
-	// std::cout << "\n*** Starting tests! *** \n";
+	const Julian& j = new Julian(2319,1,7);
+	const Gregorian& g = Gregorian(j);
+	const Gregorian& g2 = Gregorian(g);
+	const Julian& j2 = Gregorian(g2);
+	cout << j2 << endl;
 
-	// Gregorian gtoday;
-	// std::cout << "Gregorian: " << gtoday << std::endl;
-	// Julian jtoday;
-	// std::cout << "Julian: " << jtoday << std::endl;
-
-	// std::cout << "Today it is " << gtoday << " gregorian and " << jtoday << " julian";
-	// if (gtoday - jtoday == 0) std::cout << ". It is the same date" << std::endl;
-	// if (gtoday - jtoday == 0) std::cout << "It is still the same date" << std::endl;
-
-	// std::cout << "\n**Add one day**\n";
-	// ++gtoday; ++jtoday;
-	// std::cout << "It is " << gtoday << " gregorian and " << jtoday << " julian" << std::endl;
-	// if (gtoday - jtoday == 0) std::cout << "It is the same date\n" << std::endl;
-	
-	// std::cout << "\n**Add yet another day**\n";
-	// ++gtoday; ++jtoday;
-	// std::cout << "It is " << gtoday << " gregorian and " << jtoday << " julian" << std::endl;
-	// if (gtoday - jtoday == 0) std::cout << "It is the same date\n" << std::endl;
-		
-
-<<<<<<< HEAD
-	std::cout << "\n**Add one month**\n";
-	gtoday.add_month(1); jtoday.add_month(1);
-	std::cout << "It is " << gtoday << " gregorian and " << jtoday << " julian" << std::endl;
-	if (gtoday - jtoday == 0) {
-		std::cout << "It is the same date\n" << std::endl;
-	} 
-	else {
-		std::cout << "It is _NOT_ the same date\n" << std::endl;	
-	} 
-
-	Julian first = Julian(1858,1,1);
-	std::cout << first << " " << first.week_day_name(); // << " " << (int)first.julian_day_number << std::endl;
-	Julian last = Julian(2558,12,31);
-	std::cout << last <<  " " << last.week_day_name(); // << " " << (int)last.julian_day_number << std::endl;
-	
-=======
-	// std::cout << "\n**Add one month**\n";
-	// gtoday.add_month(1); jtoday.add_month(1);
-	// std::cout << "It is " << gtoday << " gregorian and " << jtoday << " julian" << std::endl;
-	// if (gtoday - jtoday == 0) {
-	// 	std::cout << "It is the same date\n" << std::endl;
-	// } 
-	// else {
-	// 	std::cout << "It is _NOT_ the same date\n" << std::endl;	
-	// } 
-
-	Julian j1 = Julian(1858,1,1);
-	std::cout << j1.mod_julian_day() << std::endl;
-	Julian j2 = Julian(1858,3,1);
-	std::cout << j2.mod_julian_day() << std::endl;
-	Julian j3 = Julian(2558,3,1);
-	std::cout << j3.mod_julian_day() << std::endl;
-	Gregorian g1 = Gregorian(1900,2,29);
-	std::cout << g1 << std::endl;
->>>>>>> 82c38aa5d9fa965734fea8b34c03ccc5b87435d8
 	return 0;
 }
