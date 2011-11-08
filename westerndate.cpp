@@ -72,10 +72,10 @@ void WesternDate::add_month(int months) {
 		}
 
 		if(day_ > days_in_a_month(year_, month_)) {
-			day_ = 30;
+			*this += 30*step;
+		} else {
+			date2julian_day_number( year_, month_, day_ );	
 		}
-
-		date2julian_day_number( year_, month_, day_ );
 		clear_cache();
 	}
 }

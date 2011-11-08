@@ -279,9 +279,8 @@ int main()
     ////////////////////////////////////////////////////////////
 
     // *** lab22b
-    // "we think we have..."
     Gregorian gk(1992,2,29);
-    std::cout << gk << " -> gk.add_month(29) -> ";
+    std::cout << "\t" << gk << " -> gk.add_month(29) -> ";
     gk.add_month(29);
     std::cout << gk << std::endl;
     assert(gk.year() == 1994
@@ -290,18 +289,9 @@ int main()
     
     // Below date and minus -28 months does not work
     Julian jk(1992,2,29);
-    Julian d_jk(1992,2,29);
+    std::cout << "\t" << jk << " -> jk.add_month(-28) -> ";
+    jk.add_month(-28);
     std::cout << jk << std::endl;
-    jk.add_month(-1);
-    std::cout << "jk.add_month(-1):\t" << jk << std::endl;
-    jk.add_month(-1);
-    std::cout << "jk.add_month(-1):\t" << jk << std::endl;
-    jk.add_month(-26);
-    std::cout << "jk.add_month(-26):\t" <<jk << std::endl;
-    d_jk.add_month(-28);
-    std::cout << "d_jk.add_month(-28):\t" << d_jk << std::endl;
-    assert(d_jk == jk);
-
     assert(jk.year() == 1989
         && jk.month() == 10
         && jk.day() == 27);
