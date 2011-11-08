@@ -1,36 +1,33 @@
-#ifndef _WESTERN_DATE_
-#define _WESTERN_DATE_
+#ifndef WESTERNDATE_H
+#define WESTERNDATE_H
 
 #include "date.h"
 
-namespace lab2
-{
+namespace lab2 {
 
 class WesternDate : public Date {
 
 protected:
-	static const int NUM_WEEK_DAYS;
-	static const int NUM_MONTHS;
-	static const std::string WEEK_DAYS[];
-	static const std::string MONTHS[];
-	static const int DAYS_IN_A_MONTH[];
-
 	virtual bool is_leap_year(int year) const = 0;
+	virtual bool is_leap_year() const;
+	bool validate_date(int year, int month, int day) const;
+	int days_in_a_month(int year, int month) const;
 
 public:
 	WesternDate();
 	WesternDate(const Date& date);
-	WesternDate(Date* dp);
-	virtual ~WesternDate();
 
-	std::string week_day_string(int day) const;
-	std::string month_string(int month) const;
+	virtual inline int days_per_week() const { return 7; };
+	virtual inline int months_per_year() const {return 12; };
+	virtual int days_this_month() const;
+	virtual int week_day() const;
+	virtual const std::string week_day_name() const;
+	virtual const std::string month_name() const;
 
-	int days_in_a_month(int year, int month) const;
-	bool validate_date(int year, int month, int day) const;
-	int days_per_week() const;
-	int months_per_year() const; 
-
+	void add_month(int = 1);
+	void add_year(int = 1);
+	//void add_month();
+	//void add_year();
 };
 
 }

@@ -1,64 +1,92 @@
 #include "westerndate.h"
+
 #include <stdexcept>
 
-namespace lab2 
-{
-
-const std::string WesternDate::WEEK_DAYS[] = {
-	"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"
-};
-
-const std::string WesternDate::MONTHS[] = {
-	"january", "february", "march", "april", "may", "june",
-	"july", "august", "september", "october", "november", "december"
-};
-
-const int WesternDate::DAYS_IN_A_MONTH[] = {
-	31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
-};
-
-const int WesternDate::NUM_WEEK_DAYS = 7;
-const int WesternDate::NUM_MONTHS = 12;
+namespace lab2  {
 
 WesternDate::WesternDate() : Date() {}
-WesternDate::WesternDate(const Date& rhs) : Date(rhs) {}
-WesternDate::WesternDate(Date* dp) : Date(dp) {}
-WesternDate::~WesternDate() {}
+WesternDate::WesternDate(const Date& d) : Date(d) {}
 
-std::string WesternDate::week_day_string(int day) const {
-	return WesternDate::WEEK_DAYS[day];
+int WesternDate::days_this_month() const 
+{	
+	return days_in_a_month(year(), month()); 
 }
 
-std::string WesternDate::month_string(int month) const {
-	return WesternDate::MONTHS[month-1];
-}
-
-int WesternDate::days_in_a_month(int year, int month) const
+int WesternDate::week_day() const
 {
-	month -= 1;
-	if (is_leap_year(year) && (month == 1)) {
-		return WesternDate::DAYS_IN_A_MONTH[month] + 1;
+	return julian_day_number % 7 + 1;
+}
+
+const std::string WesternDate::week_day_name() const
+{
+	static const std::string days_names[] = { "ONE_INDEX", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday" };
+	return days_names[week_day()];
+}
+
+const std::string WesternDate::month_name() const {
+	static const std::string months_names[] = { "ONE_INDEX", "january", "february", "march", "april", "may", "june",
+	"july", "august", "september", "october", "november", "december"
+	};
+	return months_names[month()];
+}
+
+int WesternDate::days_in_a_month(int year, int month) const {
+	static const int days_per_month[] = { -1, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+	if (is_leap_year(year) && month == 2) {
+		return 29;
 	}
-	return WesternDate::DAYS_IN_A_MONTH[month];
+	return days_per_month[month];
+}
+
+bool WesternDate::is_leap_year() const { 
+	return is_leap_year(year()); 
 }
 
 bool WesternDate::validate_date(int year, int month, int day) const {
-	if (month >= 1 && month <= 12 
-		&& day > 0 && day <= days_in_a_month(year, month)) {
-			return true;
-	} else {
-		throw std::out_of_range("Invalid date!");
+	if ( year < 1858 || year > 2558
+		|| month <= 0 || month > months_per_year() 
+		|| day <= 0 || day > days_in_a_month(year, month)) {
+			return false;
 	}
+	return true;
 }
 
-int WesternDate::days_per_week() const
-{
-	return NUM_WEEK_DAYS;
+void WesternDate::add_month(int months) {
+	int year_num = year();
+	int month_num = month() + months;
+	year_num += month_num/12;
+
+	// Adjust if rolling over year boundaries
+	// Positive case
+	if(month_num > 12) {
+		month_num = month_num % 12;
+	}
+
+	// Negative case
+	if(months < 0) {
+		month_num = (month_num % 12) + 12;
+	}		
+
+	int day_num = day();
+	if(!validate_date( year_num, month_num, day_num ) ) {
+		day_num = 30;
+	}
+
+	date2julian_day_number( year_num, month_num, day_num );
+	set_julian_day_number( julian_day_number );
 }
 
-int WesternDate::months_per_year() const
-{
-	return NUM_MONTHS;
+void WesternDate::add_year(int years) {
+	int year_ = year() + years;
+	int month_ = month();
+	int day_ = day();
+
+	if(!validate_date(year_, month_, day_)) {
+		day_ -= 1;
+	}
+
+	date2julian_day_number( year_, month_, day_);
+	set_julian_day_number( julian_day_number );	
 }
 
 }
