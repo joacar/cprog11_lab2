@@ -26,12 +26,18 @@ test: $(OBJECTS) tests.o
 datetest: $(OBJECTS) datetest.o
 	$(CXX) $(CFLAGS) $(OBJECTS) datetest.o -o datetest
 
+calendar_test: $(OBJECTS) calendar_test.o
+	$(CXX) $(CFLAGS) $(OBJECTS) calendar_test.o -o calendar_test.out	
+
 # Change these
 DATE 	= date.cpp westerndate.cpp
 KATTIS 	= kattistime.cpp
 GREGORIAN = gregorian.cpp
 JULIAN = julian.cpp
 DATE_CONVERSIONS = date_conversions.cpp	
+
+calendar_test.out:
+	g++ -g -Wall -o calendar_test.out calendar_test.cpp $(DATE) $(JULIAN) $(GREGORIAN) $(KATTIS) calendar.cpp
 
 datetest.out:
 	echo Generates datetest.out ...
