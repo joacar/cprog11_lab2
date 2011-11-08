@@ -8,14 +8,10 @@ namespace lab2 {
 
 class Date {
 
-	
 protected:
 	mutable struct cache_struct {
 		int year, month, day, week_day;	
 	} cache;
-
-private:
-	double julian_day_number;
 
 	int julian_day_number;
 	void set_julian_day_number(int new_jdn);
@@ -30,6 +26,8 @@ public:
 	Date(const Date& date);
 	Date(int jdn);
 	virtual ~Date();
+
+	friend std::ostream& operator<<(std::ostream& os, const Date& date);
 
 	/***************
 	*** GETTERS ****

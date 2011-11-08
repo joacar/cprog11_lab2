@@ -11,14 +11,10 @@
 
 namespace lab2 {
 
-int Date::round(double f) {
-	return (f > 0.0) ? floor(f + 0.5) : ceil(f - 0.5);
-}
-
 // Default constructor sets date to today
 Date::Date() :
 	cache( cache ), 
-	julian_day_number((k_time(NULL) / DAY_IN_SECONDS) + 2440588)	{ clear_cache(); } //added 0.5
+	julian_day_number((k_time(NULL) / DAY_IN_SECONDS) + 2440588) { clear_cache(); } //added 0.5
 
 Date::Date(const Date& d) :
 	cache(d.cache),
@@ -28,7 +24,9 @@ Date::Date(int jdn) :
 	cache(cache),
 	julian_day_number(jdn) { clear_cache(); }
 
-Date& Date::set_julian_day_number(double new_julian_day_number) {
+Date::~Date() {};
+
+void Date::set_julian_day_number(int new_julian_day_number) {
 	julian_day_number = new_julian_day_number;
 	clear_cache();
 }

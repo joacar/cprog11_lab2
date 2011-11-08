@@ -54,16 +54,17 @@ bool WesternDate::validate_date(int year, int month, int day) const {
 void WesternDate::add_month(int months) {
 	int year_num = year();
 	int month_num = month() + months;
-	year_num += month_num/12;
 
 	// Adjust if rolling over year boundaries
 	// Positive case
 	if(month_num > 12) {
+		year_num += month_num/12;
 		month_num = month_num % 12;
 	}
 
 	// Negative case
 	if(months < 0) {
+		year_num += month_num/12;
 		month_num = (month_num % 12) + 12;
 	}		
 
