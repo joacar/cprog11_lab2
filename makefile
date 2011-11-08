@@ -1,5 +1,30 @@
-%.out:	%.cpp
-	g++ -m32 -g -Wall $*.cpp -o $*.out
+OBJECTS = date.o westerndate.o gregorian.o julian.o kattistime.o
+
+CFLAGS += -g -Wall -Wextra -Weffc++ -O2
+
+all:
+
+.cpp.o:
+	$(CXX) $(CFLAGS) -c $< -o $@
+
+# Header dependencies
+date.o: date.h kattistime.h
+westerndate.o: date.h westerndate.h
+gregorian.o: date.h westerndate.h gregorian.h
+julian.o: date.h westerndate.h julian.h
+tests.o: date.h westerndate.h gregorian.h julian.§h
+calendar.o: date.h calendar.h
+calendar_test.o: date.h calendar.h
+cprog09lab22a.o: date.h julian.h
+cprog09lab22b.o: date.h gregorian.h
+cprog09lab22c.o: date.h julian.h gregorian.h
+cprog09lab23.o: calendar.h date.h
+
+test: $(OBJECTS) tests.o
+	$(CXX) $(CFLAGS) $(OBJECTS) tests.o -o tests
+
+datetest: $(OBJECTS) datetest.o
+	$(CXX) $(CFLAGS) $(OBJECTS) datetest.o -o datetest
 
 # Change these
 DATE 	= date.cpp westerndate.cpp
