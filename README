@@ -2,3 +2,64 @@ This in an implemntation of a calendar system using C++
 
 Current files:
 README (this)
+date.cpp
+date.h
+westerdate.cpp
+westerndate.h
+julian.cpp
+julian.h
+gregorian.cpp
+gregorian.h
+dates.cpp
+datetest.cpp 
+calendar.cpp
+calendar.h
+calendar_test.cpp
+kattistime.cpp
+kattistime.h
+Makefile
+.
+.
+
+EXTRAUPPGIFT 2.2
+1 Linux cal format
+	november 2000
+ må  ti  on  to  fr  lö  sö 
+          3 < 4>  5   6   7 
+  8   9  10  11  12  13  14 
+ 15  16  17  18  19  20  21 
+ 22  23  24  25  26  27  28 
+ 29  30                     
+
+ YYYY-MM-DD: event
+
+2 iCalendar format
+BEGIN:VCALENDAR
+VERSION:2
+PRODID://SUCCESSFULLY DEFETED KATTIS!
+BEGIN:VEVENT
+DTSTART:2000128T080000
+DTEND:2000128T090000
+SUMMARY:Första advent
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20001211T080000
+DTEND:20001211T090000
+SUMMARY:Basketträning
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20001220T080000
+DTEND:20001220T090000
+SUMMARY:Min första cykel
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20001224T080000
+DTEND:20001224T090000
+SUMMARY:Julafton
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:200111T080000
+DTEND:200111T090000
+SUMMARY:Nyårsfrukost
+END:VEVENT
+END:VCALENDAR
