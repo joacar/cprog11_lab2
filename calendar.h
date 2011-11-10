@@ -212,10 +212,11 @@ class Calendar {
 				}
 				else {
 					// if current date equals cal date surround with < >
-					if(date_ == date) {
-						os << "<"; if(i < 10) os << " "; os << i << ">";
+					int day_ = date_.day();	
+					if(day_ == date.day()) {
+						os << "<"; if(day_ < 10) os << " "; os << day_ << ">";
 					} else {
-						os << " "; if(i < 10) os << " "; os << i;
+						os << " "; if(day_ < 10) os << " "; os << day_;
 						// if date has an event add * after else add padding
 						if(events.find(date_) != events.end()) {
 							os << "*";
@@ -226,7 +227,7 @@ class Calendar {
 					++date_;
 				}
 			}
-			os << std::endl << std::endl;
+			os << std::endl;
 			typename std::map<T, std::string>::const_iterator it, end;
 			end = events.end();
 
