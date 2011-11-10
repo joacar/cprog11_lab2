@@ -50,10 +50,50 @@ int main() {
 	jul_cal.add_event("Basketträning", 4, 12, 2011);
 	jul_cal.add_event("Basketträning", 11, 12, 2011);
 	jul_cal.add_event("Nyårsfrukost", 1, 1, 2012);
-	cal = jul_cal;
+	Calendar<Gregorian> greg_cal(jul_cal);
+
+	std::cout << greg_cal;
+	std::cout << "-----------Test move_event()------------" << std::endl;
+	std::cout << "Success: Test moving event from date that exists to non-existing date to" << std::endl;
+	Gregorian greg1(2000,12,1);
+	Gregorian greg2(2000,12,8);
+	std::cout << "\t";
+	if(cal.move_event(greg1, greg2, "Första advent") ) {
+		std::cout << "successfully performed move_event( " << greg1 << ", " << greg2 << ", \"Första advent\")" << std::endl;
+	}
+	else {
+		std::cout << "failed to perform move_event( " << greg1 << ", " << greg2 << ", \"Första advent\")" << std::endl;	
+	}
+	std::cout << "Fail: Test moving event that does not exist on date from to non-existing date to" << std::endl;
+	Gregorian greg3(2011,10,10);
+	std::cout << "\t";
+	if(cal.move_event(greg1, greg3, "Första advent") ) {
+		std::cout << "successfully performed move_event( " << greg1 << ", " << greg3 << ", \"Första advent\")" << std::endl;
+	}
+	else {
+		std::cout << "failed to perform move_event( " << greg1 << ", " << greg3 << ", \"Första advent\")" << std::endl;	
+	}
+	std::cout << "Succes: Test moving event to a date with an existing event but not same date" << std::endl;
+	Gregorian greg4(2000,12,25);
+	std::cout << "\t";
+	if(cal.move_event(greg2, greg3, "SANTA IS HERE!") ) {
+		std::cout << "successfully performed move_event( " << greg2 << ", " << greg3 << ", \"SANTA IS HERE!\")" << std::endl;
+	}
+	else {
+		std::cout << "failed to perform move_event( " << greg2 << ", " << greg3 << ", \"SANTA IS HERE!\")" << std::endl;	
+	}
 
 	std::cout << cal;
-	std::cout << "----------------------------------------" << std::endl;
+
+	cal.set_format(Calendar<Gregorian>::cal);
+
+	std::cout << cal;
+
+	cal.set_date(2011,12,1);
+
+	cal.set_format(Calendar<Gregorian>::iCalendar);
+
+	std::cout << cal;
 
 	return 1;
 }
