@@ -101,5 +101,20 @@ int main() {
 
 	std::cout << cal;
 
+	cal.set_format(Calendar<Gregorian>::list);
+	std::cout << std::endl << "-------Test add_reccuring_events()------------" << std::endl;
+	std::cout << "cal.add_recurring_events(\"Work\")" << std::endl;
+	cal.add_recurring_events("Work");
+	std::cout << cal;
+
+	Calendar<Gregorian> x_mas;
+	std::cout << "cal.add_recurring_events(\"Christmas\", greg(2011,12,24)";
+	std::cout << " , 10, Calendar<Gregorian>::yearly)" << std::endl;
+	Gregorian greg(2011,12,24);
+	x_mas.add_recurring_events("Christmas", greg, 10, Calendar<Gregorian>::yearly);
+	std::cout << x_mas;
+
+
+
 	return 1;
 }

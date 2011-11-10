@@ -25,6 +25,7 @@ class Calendar {
 
 	public:
 		enum format {list, cal, iCalendar};
+		enum interval_t {daily, weekly, monthly, yearly};
 
 		T date;
 		std::multimap<T, std::string> events;
@@ -137,9 +138,29 @@ class Calendar {
 		bool add_related_event(const Date& rel_date, int days, std::string rel_event, std::string new_event) {
 			return true;	
 		};
-
-		void add_repeated_events(const Date& date, std::string event, int repeat = 100) {
-			
+		
+		void add_recurring_events(std::string event, T date = T(), int repeat = 100, interval_t interval = daily) {
+			int y, m, d;
+			for(int i = 0; i < repeat; i++) {
+				switch (interval) {
+					case daily:
+						++date;
+						break;
+					case weekly:
+						date += date.days_per_week();
+						break;
+					case monthly:
+						date.add_month();
+						break;
+					case yearly:
+						date.add_year();
+						break;
+				}
+				y = date.year();
+				m = date.month();
+				d = date.day();
+				add_event(event,d,m,y);
+			}
 		};
 
 		void add_birthday(const Date& date, std::string name, std::string message) {
