@@ -28,6 +28,12 @@ int main() {
 	cal.add_event("Min första cykel", 20, 12, 2000);
 	cal.remove_event("Basketträning", 4);
 	std::cout << cal; // OBS! Vårdagjämning och första advent är före nuvarande datum och skrivs inte ut
+	std::cout << "----------------------------------------" << std::endl;
+
+	cal.set_format(Calendar<Gregorian>::cal);
+	std::cout << cal;
+
+	cal.set_format(Calendar<Gregorian>::list);
 	
 	std::cout << "----------------------------------------" << std::endl;
 	cal.remove_event("Vårdagjämning", 20, 3, 2000);
