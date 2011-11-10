@@ -13,21 +13,14 @@ namespace lab2 {
 
 template<class T> 
 class Calendar {
-	// fails
-	T& set_default_date(int d, int m, int y) {
-		T date_;
-		if(y != -1) {
-			return date_(d, m, y );
-		} 
-		else if(m != -1) {
-			return date_(d, m, date.year() );
-		}
-		else if(d != -1) {
-			return date_(d, date.month(), date.month() );
-		}
-		else {
-			return date;
-		}
+	T set_default_date(int d, int m, int y) {
+		int year, month, day;
+		year = (y == -1) ? date.year() : y;
+		month = (m == -1) ? date.month() : m;
+		day = (d == -1) ? date.day() : d;
+		
+		return T(year,month,day);
+
 	};
 
 	public:
@@ -88,21 +81,9 @@ class Calendar {
 			return true;
 		};
 
-		bool add_event(std::string e) {
-			return add_event(e, date.day(), date.month(), date.year());
-		}
-		
-		bool add_event(std::string e, int d) { 
-			return add_event(e, d, date.month(), date.year());
-		};
-		
-		bool add_event(std::string e, int d, int m) {
-			return add_event(e, d, m, date.year()); 
-		};
-		
-		bool add_event(std::string event, int d, int m, int y) {
+		bool add_event(std::string event, int d = -1, int m = -1, int y = -1) {
 			try {
-				T date_ = T(y, m, d);
+				T date_ = set_default_date(d,m,y);//T(y, m, d);
 
 				typename std::multimap<T, std::string>::iterator it, end;
 				end = events.end();
@@ -117,21 +98,9 @@ class Calendar {
 			}
 		};
 
-		bool remove_event(std::string e) {
-			return remove_event(e, date.day(), date.month(), date.year());
-		}
-
-		bool remove_event(std::string e, int d) { 
-			return remove_event(e, d, date.month(), date.year());
-		};
-		
-		bool remove_event(std::string e, int d, int m) {
-			return remove_event(e, d, m, date.year()); 
-		};
-
-		bool remove_event(std::string event, int d, int m, int y) {
+		bool remove_event(std::string event, int d = -1, int m = -1, int y = -1) {
 			try {
-				T date_ = T(y, m, d);
+				T date_ = set_default_date(d,m,y);
 				
 				typename std::multimap<T, std::string>::iterator it, end;
 				end = events.end();
