@@ -14,7 +14,7 @@ protected:
 	} cache;
 
 	int julian_day_number;
-	virtual void clear_cache() const;
+	void clear_cache() const;
 
 	virtual void date2julian_day_number(int year, int month, int day) = 0;
 	virtual void refresh_cache() const = 0;

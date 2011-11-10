@@ -13,12 +13,6 @@ Gregorian::Gregorian(int year, int month, int day) {
 	if(!validate_date(year, month, day)) {
 		throw std::out_of_range("Invalid range");
 	}
-
-	// TODO better way to set below?
-	cache.year = year;
-	cache.month = month;
-	cache.day = day;
-	//cache.week_day = week_day();
 }
 
 // http://robm.fastmail.fm/articles/date_class.html

@@ -14,12 +14,6 @@ Julian::Julian(int year, int month, int day) {
 	if(!validate_date(year, month, day)) {
 		throw std::out_of_range("Invalid range");
 	}
-
-	// TODO better way to set below?
-	cache.year = year;
-	cache.month = month;
-	cache.day = day;
-	//cache.week_day = week_day();
 }
 
 void Julian::date2julian_day_number(int year, int month, int day) {
