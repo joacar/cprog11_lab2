@@ -26,11 +26,6 @@ Date::Date(int jdn) :
 
 Date::~Date() {};
 
-void Date::set_julian_day_number(int new_julian_day_number) {
-	julian_day_number = new_julian_day_number;
-	clear_cache();
-}
-
 void Date::clear_cache() const {
 	cache.year = EMPTY;
 	cache.month = EMPTY;

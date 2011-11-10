@@ -14,8 +14,7 @@ protected:
 	} cache;
 
 	int julian_day_number;
-	void set_julian_day_number(int new_jdn);
-	void clear_cache() const;
+	virtual void clear_cache() const;
 
 	virtual void date2julian_day_number(int year, int month, int day) = 0;
 	virtual void refresh_cache() const = 0;
@@ -48,13 +47,11 @@ public:
 	*** MUTATORS ***
 	****************/
 	virtual void add_month(int = 1) = 0;
-	//virtual void add_month() { add_month(1); };
 	virtual void add_year(int = 1) = 0;
-	//virtual void add_year() { add_year(1); };
-	inline Date& operator ++() { set_julian_day_number(++julian_day_number); return *this; };
-	inline Date& operator --() { set_julian_day_number(--julian_day_number); return *this; };
-	inline Date& operator +=(int days) { set_julian_day_number(julian_day_number + days); return *this; };
-	inline Date& operator -=(int days) { set_julian_day_number(julian_day_number - days); return *this; };	
+	inline Date& operator ++() { ++julian_day_number; clear_cache(); return *this; };
+	inline Date& operator --() { --julian_day_number; clear_cache(); return *this; };
+	inline Date& operator +=(int days) { julian_day_number += days; clear_cache(); return *this; };
+	inline Date& operator -=(int days) { julian_day_number -= days; clear_cache(); return *this; };	
 
 	inline int operator -(const Date& rhs) const { return julian_day_number - rhs.julian_day_number; };
 
