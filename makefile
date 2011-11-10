@@ -37,7 +37,7 @@ JULIAN = julian.cpp
 DATE_CONVERSIONS = date_conversions.cpp	
 
 calendar_test.out:
-	g++ -g -Wall -o calendar_test.out calendar_test.cpp $(DATE) $(JULIAN) $(GREGORIAN) $(KATTIS) calendar.cpp calendar.h
+	g++ -g -Wall -o calendar_test.out calendar_test.cpp $(DATE) $(JULIAN) $(GREGORIAN) $(KATTIS) calendar.h
 
 datetest.out:
 	echo Generates datetest.out ...
