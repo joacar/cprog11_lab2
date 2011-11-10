@@ -1,11 +1,17 @@
 #include "calendar.h"
 #include "gregorian.h"
+#include "julian.h"
 #include "kattistime.h"
 
 #include <iostream>
+#include <time.h>
 
 int main() {
 	using namespace lab2;
+	
+	time_t time_now;
+	time(&time_now);
+	set_k_time(time_now);
 
 	std::cout << "----------------------------------------" << std::endl;
 	
@@ -35,6 +41,19 @@ int main() {
 	
 	std::cout << "----------------------------------------" << std::endl;
 	std::cout << cal;
+	std::cout << "---------Test copy constructor----------" << std::endl;
+
+
+	Calendar<Julian> jul_cal;
+	jul_cal.set_date(2011,11,10);
+	jul_cal.add_event("Idag klarade vi labben");
+	jul_cal.add_event("Basketträning", 4, 12, 2011);
+	jul_cal.add_event("Basketträning", 11, 12, 2011);
+	jul_cal.add_event("Nyårsfrukost", 1, 1, 2012);
+	cal = jul_cal;
+
+	std::cout << cal;
+	std::cout << "----------------------------------------" << std::endl;
 
 	return 1;
 }
