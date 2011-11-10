@@ -31,11 +31,7 @@ void Gregorian::date2julian_day_number(int year, int month, int day) {
 }
 
 // http://robm.fastmail.fm/articles/date_class.html
-void Gregorian::refresh_cache() const
-{
-	if(cache.year != -1 && cache.month != -1 && cache.day != -1) 
-		return;
-
+void Gregorian::refresh_cache() const {
 	// http://en.wikipedia.org/wiki/Julian_day#Gregorian_calendar_from_Julian_day_number
 	int jdn = julian_day_number; //floor( julian_day_number + 0.5 );
 	int j = jdn + 32044;
@@ -58,8 +54,7 @@ void Gregorian::refresh_cache() const
 }
 
 // http://en.wikipedia.org/wiki/Leap_year#Algorithm
-bool Gregorian::is_leap_year(int year) const
-{
+bool Gregorian::is_leap_year(int year) const {
 	if(year % 400 == 0) return true;
 	if(year % 100 == 0) return false;
 	if(year % 4 == 0) return true;

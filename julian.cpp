@@ -32,10 +32,6 @@ void Julian::date2julian_day_number(int year, int month, int day) {
 }
 
 void Julian::refresh_cache() const {
-
-	if(cache.year != -1 && cache.month != -1 && cache.day != -1) 
-		return;
-	
 	float jdn = julian_day_number;
 	int z = (int) floor(jdn - 1721116.5);
 	float r = (jdn - 1721116.5) - z;
