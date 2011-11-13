@@ -193,9 +193,13 @@ class Calendar {
 					m = date_.month() - (it->first).month();
 					d = date_.day() - (it->first).day();
 
+					if( date_.month() == 2 && (it->first).days_this_month() == 29) {
+						d += 1;	
+					}
 					if(d < 0) {
 						m--;
 						d += date_.days_this_month();
+							
 					}
 					if(m < 0) {
 						y--;
