@@ -130,8 +130,12 @@ int main() {
 
 	std::cout << "add_birthday(\"Leap day\", 2000,2,29)" << std::endl;
 	b_day.add_birthday("Leap day", 2000,2,29);
-	std::cout << "b_day.set_date(2011,2,28)" << std::endl;
+	std::cout << "b_day.set_date(2001,2,28)" << std::endl;
 	b_day.set_date(2001,2,28);
+	std::cout << "calculate_age(\"Leap day\")" << std::endl;
+	b_day.calculate_age("Leap day");
+	std::cout << "b_day.set_date(2004,2,28)" << std::endl;
+	b_day.set_date(2004,2,29);
 	std::cout << "calculate_age(\"Leap day\")" << std::endl;
 	b_day.calculate_age("Leap day");
 
