@@ -59,6 +59,7 @@ int main() {
 	Calendar<Gregorian> greg_cal(jul_cal);
 
 	std::cout << greg_cal;
+	std::cout << std::endl << "*** Extrauppgift 2.1 ***" << std::endl;
 	std::cout << "-----------Test move_event()------------" << std::endl;
 	std::cout << "Success: Test moving event from date that exists to non-existing date to" << std::endl;
 	Gregorian greg1(2000,12,1);
@@ -102,7 +103,7 @@ int main() {
 	std::cout << cal;
 
 	cal.set_format(Calendar<Gregorian>::list);
-	std::cout << std::endl << "-------Test add_reccuring_events()------------" << std::endl;
+	std::cout << std::endl << "-------Test reccuring events------------" << std::endl;
 	std::cout << "cal.add_recurring_events(\"Work\")" << std::endl;
 	cal.add_recurring_events("Work");
 	std::cout << cal;
@@ -113,6 +114,26 @@ int main() {
 	Gregorian greg(2011,12,24);
 	x_mas.add_recurring_events("Christmas", greg, 10, Calendar<Gregorian>::yearly);
 	std::cout << x_mas;
+
+	std::cout << std::endl << "--------Test birthdays--------------" << std::endl;
+	std::cout << "Calendar<Gregorian> b_day" << std::endl;
+	Calendar<Gregorian> b_day;
+	std::cout << "add_birthday(\"Joakim\", 1988,7,20)" << std::endl;
+	std::cout << "add_birthday(\"Pascal\", 1988,12,16)" << std::endl;
+
+	b_day.add_birthday("Joakim", 1988,7,20);
+	b_day.add_birthday("Pascal", 1988,12,16);	
+	std::cout << "calculate_age(\"Joakim\")" << std::endl;
+	b_day.calculate_age("Joakim");
+	std::cout << "calculate_age(\"Pascal\")" << std::endl;
+	b_day.calculate_age("Pascal");
+
+	std::cout << "add_birthday(\"Leap day\", 2000,2,29)" << std::endl;
+	b_day.add_birthday("Leap day", 2000,2,29);
+	std::cout << "b_day.set_date(2011,2,28)" << std::endl;
+	b_day.set_date(2001,2,28);
+	std::cout << "calculate_age(\"Leap day\")" << std::endl;
+	b_day.calculate_age("Leap day");
 
 
 
