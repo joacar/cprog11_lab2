@@ -109,10 +109,9 @@ int main() {
 	std::cout << cal;
 
 	Calendar<Gregorian> x_mas;
-	std::cout << "cal.add_recurring_events(\"Christmas\", greg(2011,12,24)";
+	std::cout << "cal.add_recurring_events(\"Christmas\", 2011,12,24";
 	std::cout << " , 10, Calendar<Gregorian>::yearly)" << std::endl;
-	Gregorian greg(2011,12,24);
-	x_mas.add_recurring_events("Christmas", greg, 10, Calendar<Gregorian>::yearly);
+	x_mas.add_recurring_events("Christmas", 2011,12,24, 10, Calendar<Gregorian>::yearly);
 	std::cout << x_mas;
 
 	std::cout << std::endl << "--------Test birthdays--------------" << std::endl;
