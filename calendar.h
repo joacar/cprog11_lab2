@@ -25,8 +25,7 @@ class Calendar {
 
 	public:
 		enum format {list, cal, iCalendar};
-		enum interval_t {daily, weekly, monthly, yearly};
-
+		
 		T date;
 		std::multimap<T, std::string> events, b_days;
 		format print_format;
@@ -121,6 +120,10 @@ class Calendar {
 		/***********************
 		**** Extrauppgift 2.1 **
 		************************/
+		enum interval_t {daily, weekly, monthly, yearly};
+		// not very generic
+		enum week_days_t {monday = 1, tuesday, wednesday, thursday, friday, saturday, sunday};
+
 		bool move_event(const Date& from, const Date& to, std::string event) {
 			typename std::multimap<T, std::string>::iterator it, end;
 			
@@ -140,33 +143,41 @@ class Calendar {
 			return true;	
 		};
 		
-		void add_recurring_events(std::string event, T date = T(), int repeat = 100, interval_t interval = daily) {
-			int y, m, d;
-			for(int i = 0; i < repeat; i++) {
-				switch (interval) {
-					case daily:
-						++date;
-						break;
-					case weekly:
-						date += date.days_per_week();
-						break;
-					case monthly:
-						date.add_month();
-						break;
-					case yearly:
-						date.add_year();
-						break;
+		bool add_recurring_events(std::string event, int y = -1, int m = -1, int d = -1, int repeat = 100, interval_t interval = daily) {
+			int y_, m_, d_;
+
+			try {
+				T date_ = set_default_date(d,m,y);
+			
+				for(int i = 0; i < repeat; i++) {
+					switch (interval) {
+						case daily:
+							++date_;
+							break;
+						case weekly:
+							date_ += date_.days_per_week();
+							break;
+						case monthly:
+							date_.add_month();
+							break;
+						case yearly:
+							date_.add_year();
+							break;
+					}
+					y_ = date_.year();
+					m_ = date_.month();
+					d_ = date_.day();
+					add_event(event,d_,m_,y_);
 				}
-				y = date.year();
-				m = date.month();
-				d = date.day();
-				add_event(event,d,m,y);
+			} catch(std::out_of_range) {
+				return false;
 			}
+			return true;
 		};
 
 		bool add_birthday(std::string name, int y, int m, int d) {
 			try {
-				T date_ = T(y,m,d); //set_default_date(y,m,d);
+				T date_ = T(y,m,d);
 
 				typename std::multimap<T, std::string>::iterator it, end;
 				end = b_days.end();
@@ -183,27 +194,26 @@ class Calendar {
 
 		bool calculate_age(std::string name) const {
 			typename std::multimap<T, std::string>::const_iterator it, end;
-			T date_ = T(date); // get current date. Should this be calendar date?
 			int y = 0,m = 0,d = 0;
 
 			end = b_days.end();
 			for(it = b_days.begin(); it != end; it++) {
 				if(it->second == name) {
-					y = date_.year() - (it->first).year();
-					m = date_.month() - (it->first).month();
-					d = date_.day() - (it->first).day();
-
-					if( date_.month() == 2 && (it->first).days_this_month() == 29) {
+					y = date.year() - (it->first).year();
+					m = date.month() - (it->first).month();
+					d = date.day() - (it->first).day();
+					// this is not a very generic solution ... if it is leap year this should not be exe.
+					if( date.month() == 2 && (it->first).days_this_month() == 29) {
 						d += 1;	
 					}
 					if(d < 0) {
 						m--;
-						d += date_.days_this_month();
+						d += date.days_this_month();
 							
 					}
 					if(m < 0) {
 						y--;
-						m += date_.months_per_year();
+						m += date.months_per_year();
 					}
 					std::cout << "Age of " << name << " is " << y << " years, " << m << " months and " << d << " days" << std::endl;
 					return true;
