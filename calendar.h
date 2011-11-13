@@ -28,14 +28,15 @@ class Calendar {
 		enum interval_t {daily, weekly, monthly, yearly};
 
 		T date;
-		std::multimap<T, std::string> events;
+		std::multimap<T, std::string> events, b_days;
 		format print_format;
 
-		Calendar() : date(), events(), print_format( list ) {};
+		Calendar() : date(), events(), b_days(), print_format( list ) {};
 		
 		template<class U> Calendar(const Calendar<U>& cal) : 
 			date( cal.date ), 
 			events(), 
+			b_days(),
 			print_format( list ) // TODO -> can assigne const <U> cal format
 			{
 				typename std::multimap< U, std::string >::const_iterator it, end;
@@ -163,9 +164,49 @@ class Calendar {
 			}
 		};
 
-		void add_birthday(const Date& date, std::string name, std::string message) {
-			
+		bool add_birthday(std::string name, int y, int m, int d) {
+			try {
+				T date_ = T(y,m,d); //set_default_date(y,m,d);
+
+				typename std::multimap<T, std::string>::iterator it, end;
+				end = b_days.end();
+				for(it = b_days.begin(); it != end; it++) {
+					if(it->first == date_ && it->second	== name)
+						return false;
+				}
+				b_days.insert(std::pair<T, std::string>(date_, name));
+				return true;
+			}catch(std::out_of_range& e) {
+					return false;
+			}
 		};
+
+		bool calculate_age(std::string name) const {
+			typename std::multimap<T, std::string>::const_iterator it, end;
+			T date_ = T(date); // get current date. Should this be calendar date?
+			int y = 0,m = 0,d = 0;
+
+			end = b_days.end();
+			for(it = b_days.begin(); it != end; it++) {
+				if(it->second == name) {
+					y = date_.year() - (it->first).year();
+					m = date_.month() - (it->first).month();
+					d = date_.day() - (it->first).day();
+
+					if(d < 0) {
+						m--;
+						d += date_.days_this_month();
+					}
+					if(m < 0) {
+						y--;
+						m += date_.months_per_year();
+					}
+					std::cout << "Age of " << name << " is " << y << " years, " << m << " months and " << d << " days" << std::endl;
+					return true;
+				}
+			}
+			return false;
+		}
 
 		/***********************
 		*** Extrauppgift 2.2 ***
