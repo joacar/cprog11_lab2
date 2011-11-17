@@ -23,6 +23,57 @@ class Calendar {
 
 	};
 
+	bool add(std::string e, const Date& d) {
+		typename std::multimap<T, std::string>::iterator it, end;
+		end = events.end();
+		for(it = events.begin(); it != end; it++) {
+			if(it->first == d && it->second == e)
+				return false;
+		}
+		events.insert( std::pair<T, std::string>(d, e) );
+		return true;
+	};
+
+	bool remove(std::string e, const Date& d) {
+		typename std::multimap<T, std::string>::iterator it, end;
+		end = events.end();
+		for(it = events.begin(); it != end; it++) {
+			if(it->first == d && it->second == e) {
+				events.erase(it);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	bool recurring_events(std::string event, bool (Calendar<T>::*operation)(std::string, const Date&), int y = -1, int m = -1, int d = -1, int repeat = 100, interval_t interval = daily) {
+			try {
+				T date_ = set_default_date(d,m,y);
+			
+				for(int i = 0; i < repeat; i++) {
+					switch (interval) {
+						case daily:
+							++date_;
+							break;
+						case weekly:
+							date_ += date_.days_per_week();
+							break;
+						case monthly:
+							date_.add_month();
+							break;
+						case yearly:
+							date_.add_year();
+							break;
+					}
+					(*this.*operation)(event,date_);
+				}
+			} catch(std::out_of_range) {
+				return false;
+			}
+			return true;
+		};
+
+
 	public:
 		enum format {list, cal, iCalendar};
 		
@@ -84,16 +135,8 @@ class Calendar {
 
 		bool add_event(std::string event, int d = -1, int m = -1, int y = -1) {
 			try {
-				T date_ = set_default_date(d,m,y);//T(y, m, d);
-
-				typename std::multimap<T, std::string>::iterator it, end;
-				end = events.end();
-				for(it = events.begin(); it != end; it++) {
-					if(it->first == date_ && it->second == event)
-						return false;
-				}
-				events.insert( std::pair<T, std::string>(date_, event) );
-				return true;
+				T date_ = set_default_date(d,m,y);
+				return add(event, date_);
 			} catch(std::out_of_range& e) {
 				return false;
 			}
@@ -102,16 +145,7 @@ class Calendar {
 		bool remove_event(std::string event, int d = -1, int m = -1, int y = -1) {
 			try {
 				T date_ = set_default_date(d,m,y);
-				
-				typename std::multimap<T, std::string>::iterator it, end;
-				end = events.end();
-				for(it = events.begin(); it != end; it++) {
-					if(it->first == date_ && it->second == event) {
-						events.erase(it);
-						return true;
-					}
-				}
-				return false;
+				return remove(event, date_);
 			} catch (std::out_of_range& e) {
 				return false;
 			}
@@ -130,7 +164,7 @@ class Calendar {
 			end = events.end();
 			for(it = events.begin(); it != end; it++) {
 				if(it->first == from && it->second == event) {
-					bool success = add_event(event, to.day(), to.month(), to.year());
+					bool success = add(event, to);
 					if(success)		// remove event only if it is successfully added
 						events.erase(it);
 					return success;
@@ -142,51 +176,19 @@ class Calendar {
 		bool add_related_event(const Date& rel_date, int days, std::string rel_event, std::string new_event) {
 			return true;	
 		};
-		
-		bool add_recurring_events(std::string event, int y = -1, int m = -1, int d = -1, int repeat = 100, interval_t interval = daily) {
-			int y_, m_, d_;
 
-			try {
-				T date_ = set_default_date(d,m,y);
-			
-				for(int i = 0; i < repeat; i++) {
-					switch (interval) {
-						case daily:
-							++date_;
-							break;
-						case weekly:
-							date_ += date_.days_per_week();
-							break;
-						case monthly:
-							date_.add_month();
-							break;
-						case yearly:
-							date_.add_year();
-							break;
-					}
-					y_ = date_.year();
-					m_ = date_.month();
-					d_ = date_.day();
-					add_event(event,d_,m_,y_);
-				}
-			} catch(std::out_of_range) {
-				return false;
-			}
-			return true;
+		bool add_recurring_events(std::string e, int y=-1, int m = -1, int d = -1, int repeat = 100, interval_t interval = daily) {
+			return recurring_events(e, &Calendar<T>::add, y, m, d, repeat, interval);	
+		};
+
+		bool remove_recurring_events(std::string e, int y=-1, int m = -1, int d = -1, int repeat = 100, interval_t interval = daily) {
+			return recurring_events(e, &Calendar<T>::remove, y, m, d, repeat, interval);
 		};
 
 		bool add_birthday(std::string name, int y, int m, int d) {
 			try {
 				T date_ = T(y,m,d);
-
-				typename std::multimap<T, std::string>::iterator it, end;
-				end = b_days.end();
-				for(it = b_days.begin(); it != end; it++) {
-					if(it->first == date_ && it->second	== name)
-						return false;
-				}
-				b_days.insert(std::pair<T, std::string>(date_, name));
-				return true;
+				return add(name, date_);
 			}catch(std::out_of_range& e) {
 					return false;
 			}
