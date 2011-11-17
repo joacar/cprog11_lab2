@@ -114,6 +114,12 @@ int main() {
 	x_mas.add_recurring_events("Christmas", 2011,12,24, 10, Calendar<Gregorian>::yearly);
 	std::cout << x_mas;
 
+	std::cout << "cal.remove_recurring_events(\"Christmas\", 2011,12,24";
+	std::cout << " , 10, Calendar<Gregorian>::yearly)" << std::endl;
+	x_mas.remove_recurring_events("Christmas", 2011,12,24, 10, Calendar<Gregorian>::yearly);
+	std::cout << x_mas;
+
+
 	std::cout << std::endl << "--------Test birthdays--------------" << std::endl;
 	std::cout << "Calendar<Gregorian> b_day" << std::endl;
 	Calendar<Gregorian> b_day;
@@ -138,7 +144,5 @@ int main() {
 	std::cout << "calculate_age(\"Leap day\")" << std::endl;
 	b_day.calculate_age("Leap day");
 
-
-
 	return 1;
-}
+};
