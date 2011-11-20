@@ -28,12 +28,6 @@ int main() {
 	cal.add_event("Min första cykel", 20, 12, 2000);
 	cal.remove_event("Basketträning", 4);
 	std::cout << cal; // OBS! Vårdagjämning och första advent är före nuvarande datum och skrivs inte ut
-	std::cout << "----------------------------------------" << std::endl;
-
-	cal.set_format(Calendar<Gregorian>::cal);
-	std::cout << cal;
-
-	cal.set_format(Calendar<Gregorian>::list);
 	
 	std::cout << "----------------------------------------" << std::endl;
 	cal.remove_event("Vårdagjämning", 20, 3, 2000);
@@ -41,82 +35,67 @@ int main() {
 
 	cal.set_date(2000, 11, 2);
 	if (! cal.remove_event("Julafton", 24)) {
-		std::cout << " cal.remove_event(\"Julafton\", 24) tar inte"; 
+		std::cout << " cal.remove_event(\"Julafton\", 24) tar inte" << std::endl; 
 		std::cout << " bort något eftersom aktuell månad är november" << std::endl;
 	}
 	
 	std::cout << "----------------------------------------" << std::endl;
 	std::cout << cal;
-	std::cout << "---------Test copy constructor----------" << std::endl;
-
-
+	std::cout << std::endl << "---------Test copy constructor----------" << std::endl;
 	Calendar<Julian> jul_cal;
-	jul_cal.set_date(2011,11,10);
-	jul_cal.add_event("Idag klarade vi labben");
-	jul_cal.add_event("Basketträning", 4, 12, 2011);
-	jul_cal.add_event("Basketträning", 11, 12, 2011);
-	jul_cal.add_event("Nyårsfrukost", 1, 1, 2012);
+	jul_cal.add_event("Hacking the db");
+	jul_cal.add_event("Basketträning");
+	jul_cal.add_event("Gymnastik");
 	Calendar<Gregorian> greg_cal(jul_cal);
 
+	std::cout << "Calendar<Julian> jul_cal;" << std::endl;
+	std::cout << "jul_cal.add_event(\"Hacking the db\");" << std::endl;
+	std::cout << "jul_cal.add_event(\"Basketträning\");;" << std::endl;
+	std::cout << "jul_cal.add_event(\"Gymnastik\");" << std::endl;
+	std::cout << "Calendar<Gregorian> greg_cal(jul_cal);" << std::endl;
+	std::cout << "----------------------------------------" << std::endl;
 	std::cout << greg_cal;
-	std::cout << std::endl << "*** Extrauppgift 2.1 ***" << std::endl;
+	
+	std::cout << std::endl << "\t*** Extrauppgift 2.1 ***" << std::endl;
+	std::cout << "-----------Test related events----------" << std::endl;
+	Calendar<Gregorian> related;
+	Gregorian tday;
+	if(related.add_event("Today")) std::cout << "related.add_event(\"Today\")" << std::endl;
+	if(related.add_related_event(tday, 10, "Today", "Ten days from today")) {
+		std::cout << "related.add_related_event(Gregorian(), 10, \"Today\", \"Ten days from today\")" << std::endl;
+	}
+	std::cout << "----------------------------------------" << std::endl;
+	std::cout << related;
+	std::cout << "----------------------------------------" << std::endl;
+
+	Gregorian tmr; ++tmr;
+	if(related.move_event(tday, tmr, "Today")) {
+		std::cout << "related.move_event(\"Today\", Gregorian(), ++Gregorian())" << std::endl;
+	}
+	std::cout << "----------------------------------------" << std::endl;
+	std::cout << related;
+
 	std::cout << "-----------Test move_event()------------" << std::endl;
-	std::cout << "Success: Test moving event from date that exists to non-existing date to" << std::endl;
-	Gregorian greg1(2000,12,1);
-	Gregorian greg2(2000,12,8);
-	std::cout << "\t";
-	if(cal.move_event(greg1, greg2, "Första advent") ) {
-		std::cout << "successfully performed move_event( " << greg1 << ", " << greg2 << ", \"Första advent\")" << std::endl;
-	}
-	else {
-		std::cout << "failed to perform move_event( " << greg1 << ", " << greg2 << ", \"Första advent\")" << std::endl;	
-	}
-	std::cout << "Fail: Test moving event that does not exist on date from to non-existing date to" << std::endl;
-	Gregorian greg3(2011,10,10);
-	std::cout << "\t";
-	if(cal.move_event(greg1, greg3, "Första advent") ) {
-		std::cout << "successfully performed move_event( " << greg1 << ", " << greg3 << ", \"Första advent\")" << std::endl;
-	}
-	else {
-		std::cout << "failed to perform move_event( " << greg1 << ", " << greg3 << ", \"Första advent\")" << std::endl;	
-	}
-	std::cout << "Succes: Test moving event to a date with an existing event but not same date" << std::endl;
-	Gregorian greg4(2000,12,25);
-	std::cout << "\t";
-	if(cal.move_event(greg2, greg3, "SANTA IS HERE!") ) {
-		std::cout << "successfully performed move_event( " << greg2 << ", " << greg3 << ", \"SANTA IS HERE!\")" << std::endl;
-	}
-	else {
-		std::cout << "failed to perform move_event( " << greg2 << ", " << greg3 << ", \"SANTA IS HERE!\")" << std::endl;	
-	}
 
-	std::cout << cal;
-
-	cal.set_format(Calendar<Gregorian>::cal);
-
-	std::cout << cal;
-
-	cal.set_date(2011,12,1);
-
-	cal.set_format(Calendar<Gregorian>::iCalendar);
-
-	std::cout << cal;
 
 	cal.set_format(Calendar<Gregorian>::list);
 	std::cout << std::endl << "-------Test reccuring events------------" << std::endl;
-	std::cout << "cal.add_recurring_events(\"Work\")" << std::endl;
-	cal.add_recurring_events("Work");
-	std::cout << cal;
+	//std::cout << "cal.add_recurring_events(\"Work\")" << std::endl;
+	//cal.add_recurring_events("Work",);
+	//std::cout << cal;
 
 	Calendar<Gregorian> x_mas;
 	std::cout << "cal.add_recurring_events(\"Christmas\", 2011,12,24";
-	std::cout << " , 10, Calendar<Gregorian>::yearly)" << std::endl;
-	x_mas.add_recurring_events("Christmas", 2011,12,24, 10, Calendar<Gregorian>::yearly);
+	std::cout << " , 4, Calendar<Gregorian>::yearly)" << std::endl;
+	x_mas.add_recurring_events("Christmas", 2011,12,24, 4, Calendar<Gregorian>::yearly);
+	std::cout << "----------------------------------------" << std::endl;
 	std::cout << x_mas;
+	std::cout << "----------------------------------------" << std::endl;
 
 	std::cout << "cal.remove_recurring_events(\"Christmas\", 2011,12,24";
-	std::cout << " , 10, Calendar<Gregorian>::yearly)" << std::endl;
-	x_mas.remove_recurring_events("Christmas", 2011,12,24, 10, Calendar<Gregorian>::yearly);
+	std::cout << " , 4, Calendar<Gregorian>::yearly)" << std::endl;
+	x_mas.remove_recurring_events("Christmas", 2011,12,24, 4, Calendar<Gregorian>::yearly);
+	std::cout << "----------------------------------------" << std::endl;
 	std::cout << x_mas;
 
 
@@ -128,21 +107,18 @@ int main() {
 
 	b_day.add_birthday("Joakim", 1988,7,20);
 	b_day.add_birthday("Pascal", 1988,12,16);	
-	std::cout << "calculate_age(\"Joakim\")" << std::endl;
-	b_day.calculate_age("Joakim");
-	std::cout << "calculate_age(\"Pascal\")" << std::endl;
-	b_day.calculate_age("Pascal");
 
-	std::cout << "add_birthday(\"Leap day\", 2000,2,29)" << std::endl;
-	b_day.add_birthday("Leap day", 2000,2,29);
-	std::cout << "b_day.set_date(2001,2,28)" << std::endl;
-	b_day.set_date(2001,2,28);
-	std::cout << "calculate_age(\"Leap day\")" << std::endl;
-	b_day.calculate_age("Leap day");
-	std::cout << "b_day.set_date(2004,2,28)" << std::endl;
-	b_day.set_date(2004,2,29);
-	std::cout << "calculate_age(\"Leap day\")" << std::endl;
-	b_day.calculate_age("Leap day");
+	std::cout << std::endl << "\t**** Extrauppgift 2.2 ****" << std::endl;
+	cal.set_date(2011,12,1);
+
+	cal.set_format(Calendar<Gregorian>::cal);
+	std::cout << "----------------------------------------" << std::endl;
+	std::cout << cal;
+	
+	cal.set_format(Calendar<Gregorian>::iCalendar);
+	std::cout << "----------------------------------------" << std::endl;
+	std::cout << cal;
+	std::cout << "----------------------------------------" << std::endl;
 
 	return 1;
 };
