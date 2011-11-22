@@ -3,6 +3,7 @@
 
 #include "date.h"
 
+#include <algorithm>
 #include <iostream>
 #include <string>
 #include <map>
@@ -134,7 +135,8 @@ public:
 		friend std::ostream& operator<<(std::ostream& os, const Calendar<T>& calendar) {
 			switch(calendar.print_format) {
 				case list:
-					return calendar.print_list_format(os);
+					calendar.print_list_format();
+					break;
 				case cal:
 					return calendar.print_cal_format(os);
 				case iCalendar:
@@ -188,9 +190,9 @@ public:
 					if(e.is_child) {
 						e.parent.first += diff; // update parent
 						iterator_t first = events.lower_bound(e.date), second = events.upper_bound(e.date);
-						for(iterator_t it = first; it != second; it++) {
-							if(it->second.date == e.parent.first && it->second.name == e.parent.second) {
-								Event& parent = it->second;
+						for(; first != second; first++) {
+							if(first->second.date == e.parent.first && first->second.name == e.parent.second) {
+								Event& parent = first->second;
 								
 
 							}
@@ -216,9 +218,8 @@ public:
 
 		bool add_related_event(const Date& rel_date, int days, std::string rel_event, std::string new_event) {
 			iterator_t first = events.lower_bound(rel_date), end = events.upper_bound(rel_date);
-
-			for(iterator_t it = first; it != end; it++) {
-				Event& rel_e = it->second;
+			for(; first != end; first++) {
+				Event& rel_e = first->second;
 				if(rel_e.name == rel_event) {	// rel_date found
 					T new_date(rel_date);
 					new_date += days;
@@ -250,7 +251,7 @@ public:
 			try {
 				T date_ = set_default_date(d,m,y);
 			
-				for(int i = 0; i < repeat; i++) {
+				for(int i = 0; i < repeat; ++i) {
 					switch (interval) {
 						case daily:
 							++date_;
@@ -306,19 +307,18 @@ public:
 
 		/***********************
 		*** Extrauppgift 2.2 ***
-		************************/		
-		void set_format(format print_format) {
-			this->print_format = print_format;
-		}
+		************************/
+		void set_format(format print_format) { this->print_format = print_format; };
 
-		std::ostream& print_list_format(std::ostream& os) const {
-			const_iterator_t it, end;
+		struct PrintObject {
+			void operator()(std::pair<T, Event> pair) const {
+				std::cout << pair.first << " : " << pair.second << std::endl;		
+			}	
+		} print;
+		
 
-			for(it = events.begin(); it != events.end(); it++) {
-				if(it->first > date)
-					os << it->first << " : " << it->second << std::endl;	
-			}
-			return os;	
+		void print_list_format() const {
+			for_each(events.lower_bound(date), events.end(), print);
 		};
 
 		std::ostream& print_cal_format(std::ostream& os) const {
@@ -345,7 +345,6 @@ public:
 					} else {
 						os << " "; if(day_ < 10) os << " "; os << day_;
 						// if date has an event add * after else add padding
-						// TODO -> below doesn't work...
 						if(events.find(date_) != events.end()) {
 							os << "*";
 						} else {
@@ -356,11 +355,7 @@ public:
 				}
 			}
 			os << std::endl;
-
-			for(const_iterator_t it = events.begin(); it != events.end(); it++) {
-				if((*it).year == date.year() && (*it).first.month() == date.month())
-					os << (*it).first << ": " << (*it).second << std::endl;
-			}
+			print_list_format();
 			return os;
 		}
 
