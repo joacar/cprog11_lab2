@@ -14,6 +14,7 @@ namespace lab2 {
 
 template<class T> 
 class Calendar {
+public:
 	struct Event {
 		T date;
 		std::string name;
@@ -30,19 +31,15 @@ class Calendar {
 			related(), 
 			is_birthday(b_day),
 			is_child(true),
-			parent(std::make_pair<T, std::string>(rel.date,rel.name)) {
-			related.insert(std::pair<T, std::string>(rel.date, rel.name) );
-		};
-		
-		void add_relation(const Event& rel_e) {
-			related.insert( std::pair<T, std::string>(rel_e.date, rel_e.name) );
-		};
+			parent(std::make_pair<T, std::string>(rel.date,rel.name)) {};
 
 		friend std::ostream& operator<<(std::ostream& os, const Event& e) {
 			os << e.name;
 
+			if(e.is_child)
+				os << " has parent " << e.parent.first << " : " << e.parent.second; 
 			if(e.related.size() > 0)
-				os << " has parent " << e.parent.second << " and " << e.related.size() << " related event(s)";
+				os << " and " << e.related.size() << " related event(s)";
 
 			return os;
 		};		
@@ -50,6 +47,7 @@ class Calendar {
 
 	typedef typename std::multimap<T, Calendar<T>::Event>::const_iterator const_iterator_t;
 	typedef typename std::multimap<T, Calendar<T>::Event>::iterator iterator_t;
+	typedef std::multimap<T, Calendar<T>::Event> event_t;
 
 	T set_default_date(int d, int m, int y) {
 		int year, month, day;
@@ -61,18 +59,18 @@ class Calendar {
 	};
 
 	bool add_event(const Event& e) {
-		iterator_t it, end;
-		end = events.end();
-		for(it = events.begin(); it != end; it++) {
+		iterator_t first = events.lower_bound(e.date), last = events.upper_bound(e.date);
+		for(iterator_t it = first; it != last; it++) {
 			if(it->first == e.date && it->second.name == e.name)
 				return false;
 		}
-		events.insert( std::pair<T, Event>(e.date, e) );
+		events.insert( std::make_pair(e.date, e) );
 		return true;
 	};
 
 	bool remove_event(const Event& e) {
-		for(iterator_t it = events.begin(); it != events.end(); it++) {
+		iterator_t first = events.lower_bound(e.date), last = events.upper_bound(e.date);
+		for(iterator_t it = first; it != last; it++) {
 			Event& event = it->second;
 			if(event.date == e.date && event.name == e.name) {
 				if(event.is_child)
@@ -99,7 +97,7 @@ class Calendar {
 		}
 	};
 
-	public:
+	//public:
 		enum format {list, cal, iCalendar};
 		
 		T date;
@@ -114,12 +112,9 @@ class Calendar {
 			b_days(),
 			print_format(list) // TODO -> cant assigne const <U> cal format
 			{
-				//typename std::multimap<U, Event>::const_iterator it, end;
-				//end = cal.events.end();
-
-				//for(auto it = cal.events.begin(); it != cal.events.end(); it++) {
+				typename std::multimap<U, Event>::const_iterator it;
+				//for(it = cal.events.begin(); it != cal.events.end(); it++)
 				//	events.insert( std::pair<U, Event>(it->first, it->second) );
-				//}
 		};
 
 		~Calendar() {};
@@ -130,12 +125,9 @@ class Calendar {
 			print_format = rhs.print_format;
 			b_days.clear();
 
-			typename std::multimap<U, Event>::const_iterator it, end;
-			end = rhs.events.end();
-
-			for(it = rhs.events.begin(); it != rhs.events.end(); it++) {
+			typename std::multimap<U, Event>::const_iterator it;
+			for(it = rhs.events.begin(); it != rhs.events.end(); it++)
 				events.insert( std::pair<U, Event>(it->first, it->second) );
-			}
 			return *this;
 		};
 
@@ -162,8 +154,7 @@ class Calendar {
 
 		bool add_event(std::string e, int d = -1, int m = -1, int y = -1) {
 			try {
-				T date_ = set_default_date(d,m,y);
-				return add_event( Event(date_, e) );
+				return add_event( Event( set_default_date(d,m,y), e) );
 			} catch(std::out_of_range& e) {
 				return false;
 			}
@@ -171,8 +162,7 @@ class Calendar {
 
 		bool remove_event(std::string e, int d = -1, int m = -1, int y = -1) {
 			try {
-				T date_ = set_default_date(d,m,y);
-				return remove_event( Event(date_, e) );
+				return remove_event( Event( set_default_date(d,m,y), e) );
 			} catch (std::out_of_range& e) {
 				return false;
 			}
@@ -189,16 +179,23 @@ class Calendar {
 		bool move_event(const Date& from, const Date& to, std::string event) {			
 			int diff = to - from;
 			for(iterator_t it = events.begin(); it != events.end(); it++) {
+				//std::cout << "\tEvent: " << it->second.name << " input: " << event << std::endl;
 				if(it->first == from && it->second.name == event) {
 					Event& e = it->second;
-					//if(!add_event(e.date)) return false;
+					//std::cout << "\t\tEvent: " << e << std::endl;
+					//if(!add_event(e)) return false;
 
-					// if(e.is_child) {
-					// 	iterator_t first = e.related.lower_bound(e.date), second = e.related.upper_bound(e.date);
-					// 	for(iterator_t it = first; it != second; it++) {
-							
-					// 	}
-					// }
+					if(e.is_child) {
+						e.parent.first += diff; // update parent
+						iterator_t first = events.lower_bound(e.date), second = events.upper_bound(e.date);
+						for(iterator_t it = first; it != second; it++) {
+							if(it->second.date == e.parent.first && it->second.name == e.parent.second) {
+								Event& parent = it->second;
+								
+
+							}
+						}
+					}
 					
 					typename std::set< std::pair<T, std::string> >::iterator rel;
 					for(rel = e.related.begin(); rel != e.related.end(); rel++) {
@@ -208,7 +205,7 @@ class Calendar {
 					}
 
 					Event tmp = e;
-					events.erase(it); //remove_event(e);
+					events.erase(it);
 					tmp.date = to;
 					events.insert( std::pair<T, Event>(to, tmp) );
 					return true;
@@ -226,9 +223,10 @@ class Calendar {
 					T new_date(rel_date);
 					new_date += days;
 					Event new_e(new_date, new_event, rel_e);
-					//rel_e.add_relation(new_e);
+
 					if(!add_event(new_e)) return false;
-				
+
+					rel_e.related.insert( std::pair<T, std::string>(new_date, new_event) );
 					return true;
 				}
 			}
@@ -335,10 +333,11 @@ class Calendar {
 				if(i % days_per_week_ == 1 && i != 1)
 					os << std::endl;
 				// for days not in month fill with spaces x 4
-				if(i < first_week_day_this_month || i > days_this_month_) {
+				if(i < first_week_day_this_month || i > days_this_month_ + first_week_day_this_month-1) {
 					os << "    ";
 				}
 				else {
+					//std::cout << "i: " << i << std::endl;
 					// if current date equals cal date surround with < >
 					int day_ = date_.day();	
 					if(day_ == date.day()) {
@@ -357,11 +356,9 @@ class Calendar {
 				}
 			}
 			os << std::endl;
-			const_iterator_t it, end;
-			end = events.end();
 
-			for(it = events.begin(); it != end; it++) {
-				if((*it).first.month() == date.month())
+			for(const_iterator_t it = events.begin(); it != events.end(); it++) {
+				if((*it).year == date.year() && (*it).first.month() == date.month())
 					os << (*it).first << ": " << (*it).second << std::endl;
 			}
 			return os;
