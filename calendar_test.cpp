@@ -64,13 +64,17 @@ int main() {
 	if(related.add_related_event(tday, 10, "Today", "Ten days from today")) {
 		std::cout << "related.add_related_event(Gregorian(), 10, \"Today\", \"Ten days from today\")" << std::endl;
 	}
+	if(related.add_related_event(tday += 10, -2, "Ten days from today", "Ten minus two days from today")) {
+		std::cout << "related.add_related_event(Gregorian() += 10, -2, \"Ten days from today\"";
+		std::cout << ", \"Ten minus two days from today\")" << std::endl;
+	}
 	std::cout << "----------------------------------------" << std::endl;
 	std::cout << related;
 	std::cout << "----------------------------------------" << std::endl;
 
 	Gregorian tmr; ++tmr;
 	if(related.move_event(tday, tmr, "Today")) {
-		std::cout << "related.move_event(\"Today\", Gregorian(), ++Gregorian())" << std::endl;
+		std::cout << "related.move_event(Gregorian(), ++Gregorian(), \"Today\")" << std::endl;
 	}
 	std::cout << "----------------------------------------" << std::endl;
 	std::cout << related;
@@ -109,7 +113,7 @@ int main() {
 	b_day.add_birthday("Pascal", 1988,12,16);	
 
 	std::cout << std::endl << "\t**** Extrauppgift 2.2 ****" << std::endl;
-	cal.set_date(2011,12,1);
+	cal.set_date(2011,12,2);
 
 	cal.set_format(Calendar<Gregorian>::cal);
 	std::cout << "----------------------------------------" << std::endl;
