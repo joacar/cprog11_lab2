@@ -64,7 +64,8 @@ int main() {
 	if(related.add_related_event(tday, 10, "Today", "Ten days from today")) {
 		std::cout << "related.add_related_event(Gregorian(), 10, \"Today\", \"Ten days from today\")" << std::endl;
 	}
-	if(related.add_related_event(tday += 10, -2, "Ten days from today", "Ten minus two days from today")) {
+	Gregorian ten_days; ten_days += 10;
+	if(related.add_related_event(ten_days, -2, "Ten days from today", "Ten minus two days from today")) {
 		std::cout << "related.add_related_event(Gregorian() += 10, -2, \"Ten days from today\"";
 		std::cout << ", \"Ten minus two days from today\")" << std::endl;
 	}
@@ -78,42 +79,29 @@ int main() {
 	}
 	std::cout << "----------------------------------------" << std::endl;
 	std::cout << related;
-
 	std::cout << "-----------Test move_event()------------" << std::endl;
 
 
 	cal.set_format(Calendar<Gregorian>::list);
 	std::cout << std::endl << "-------Test reccuring events------------" << std::endl;
-	//std::cout << "cal.add_recurring_events(\"Work\")" << std::endl;
-	//cal.add_recurring_events("Work",);
-	//std::cout << cal;
-
-	Calendar<Gregorian> x_mas;
-	std::cout << "cal.add_recurring_events(\"Christmas\", 2011,12,24";
-	std::cout << " , 4, Calendar<Gregorian>::yearly)" << std::endl;
-	x_mas.add_recurring_events("Christmas", 2011,12,24, 4, Calendar<Gregorian>::yearly);
+	Calendar<Gregorian> recurring_cal;
+	std::cout << "recurring_cal.add_yearly_event(Gregorian(2011,12,24), \"Christmas\", 4)" << std::endl;
+	recurring_cal.add_yearly_event(Gregorian(2011,12,24), "Christmas", 4);
+	std::cout << "recurring_cal.add_weekly(Gregorian(), \"Lab presentation\")" << std::endl;
+	recurring_cal.add_weekly_event(Gregorian(), "Lab presentation");
 	std::cout << "----------------------------------------" << std::endl;
-	std::cout << x_mas;
+	std::cout << recurring_cal;
 	std::cout << "----------------------------------------" << std::endl;
-
-	std::cout << "cal.remove_recurring_events(\"Christmas\", 2011,12,24";
-	std::cout << " , 4, Calendar<Gregorian>::yearly)" << std::endl;
-	x_mas.remove_recurring_events("Christmas", 2011,12,24, 4, Calendar<Gregorian>::yearly);
+	std::cout << "recurring_cal.remove_event(\"Christmas\", 2011,12,24)" << std::endl;
+	recurring_cal.remove_event("Christmas", 2011,12,24);
 	std::cout << "----------------------------------------" << std::endl;
-	std::cout << x_mas;
+	std::cout << recurring_cal;
 
 
 	std::cout << std::endl << "--------Test birthdays--------------" << std::endl;
-	std::cout << "Calendar<Gregorian> b_day" << std::endl;
-	Calendar<Gregorian> b_day;
-	std::cout << "add_birthday(\"Joakim\", 1988,7,20)" << std::endl;
-	std::cout << "add_birthday(\"Pascal\", 1988,12,16)" << std::endl;
-
-	b_day.add_birthday("Joakim", 1988,7,20);
-	b_day.add_birthday("Pascal", 1988,12,16);	
-
+	
 	std::cout << std::endl << "\t**** Extrauppgift 2.2 ****" << std::endl;
-	cal.set_date(2011,12,2);
+	cal.set_date(2000,12,2);
 
 	cal.set_format(Calendar<Gregorian>::cal);
 	std::cout << "----------------------------------------" << std::endl;
