@@ -98,7 +98,7 @@ public:
 		}
 	};
 
-	//public:
+	public:
 		enum format {list, cal, iCalendar};
 		
 		T date;
@@ -173,137 +173,146 @@ public:
 		/***********************
 		**** Extrauppgift 2.1 **
 		************************/
-		enum interval_t {daily, weekly, monthly, yearly};
 		// not very generic
 		enum week_days_t {monday = 1, tuesday, wednesday, thursday, friday, saturday, sunday};
+		enum interval_t {daily, weekly, monthly, yearly};	// , week_days_t
 
-		
-		bool move_event(const Date& from, const Date& to, std::string event) {			
+		static const int DEBUG = 1;
+		bool move_event(const Date& from, const Date& to, std::string event) {
+			return move_event(from, to, event, date, false);
+		}
+		bool move_event(const Date& from, const Date& to, std::string event, const Date& parent_date, 
+						bool moved_parent) {
 			int diff = to - from;
-			for(iterator_t it = events.begin(); it != events.end(); it++) {
-				//std::cout << "\tEvent: " << it->second.name << " input: " << event << std::endl;
-				if(it->first == from && it->second.name == event) {
-					Event& e = it->second;
-					//std::cout << "\t\tEvent: " << e << std::endl;
-					//if(!add_event(e)) return false;
-
-					if(e.is_child) {
-						e.parent.first += diff; // update parent
-						iterator_t first = events.lower_bound(e.date), second = events.upper_bound(e.date);
-						for(; first != second; first++) {
-							if(first->second.date == e.parent.first && first->second.name == e.parent.second) {
-								Event& parent = first->second;
+			iterator_t it = events.lower_bound( T(from) ), last = events.upper_bound( T(from) );
+			for(; it != last; ++it) {
+				Event& event2move = it->second;
+				if( event2move.name == event) {
+					// Found event to move! If (to && event) exists in events return false;
+					//if(!add_event(Event( T(to), event)) ) return false;
+					// Successfully added, remove from events
+					//events.erase(it);
+					std::cout << "Found event: " <<  event2move.date << " : " <<  event2move.name << std::endl;
+					typename std::set< std::pair<T, std::string> >::iterator rel;
+					if( event2move.is_child) {
+						std::cout << "\tI HAVE A PARENT! Parent is ";
+						iterator_t first = events.lower_bound( event2move.parent.first), second = events.upper_bound( event2move.parent.first);
+						for(; first != second; ++first) {
+							Event& parent = first->second;
+							if(parent.name ==  event2move.parent.second) {
 								
-
+								 std::cout << parent.name;
+								for(rel = parent.related.begin(); rel != parent.related.end(); ++rel) {
+									if( event2move.date == rel->first &&  event2move.name == rel->second) {
+										parent.related.insert(std::make_pair( T(to), rel->second) );
+										parent.related.erase(rel);
+										  std::cout << "\t\tInserted into parent: ";
+										  std::cout << rel->first << " : " << rel->second << std::endl;
+										break;
+									}
+								}
+							} else {
+								  std::cout << " NULL?!";
 							}
+							  std::cout << std::endl;
 						}
 					}
-					
-					typename std::set< std::pair<T, std::string> >::iterator rel;
-					for(rel = e.related.begin(); rel != e.related.end(); rel++) {
+					//std::set< std::pair<T, std::string> >::iterator rel_first, rel_last;
+					//rel_first =  event2move.related.lower_bound( event2move.date);
+					//rel_last =  event2move.related.upper_bound( event2move.date)
+					for(rel =  event2move.related.begin(); rel !=  event2move.related.end(); ++rel) {
 						T new_date(rel->first);
 						new_date += diff;
-						move_event(rel->first, new_date, rel->second);
+						std::cout << "\t*** move_event\n";
+						move_event(rel->first, new_date, rel->second, to, true);
+						std::cout << "\t***\n";
 					}
 
-					Event tmp = e;
+
+					if(moved_parent) {
+						 event2move.parent.first = T(parent_date);
+						std::cout << "\tUPDATED PARENT " <<  event2move.parent.first << " : " <<  event2move.parent.second << std::endl;
+					}
+
+					Event tmp =  event2move;
 					events.erase(it);
-					tmp.date = to;
-					events.insert( std::pair<T, Event>(to, tmp) );
+					tmp.date = T(to);
+					std::cout << "\tADDED " << tmp.date << " : " << tmp << std::endl;
+					events.insert( std::make_pair( T(to), tmp) );
 					return true;
 				}
 			}
 			return false;
 		};
 
-		bool add_related_event(const Date& rel_date, int days, std::string rel_event, std::string new_event) {
+		bool add_related_event(const Date& rel_date, int days, std::string rel_event, std::string new_event,
+								bool bday = false) {
 			iterator_t first = events.lower_bound(rel_date), end = events.upper_bound(rel_date);
 			for(; first != end; first++) {
 				Event& rel_e = first->second;
 				if(rel_e.name == rel_event) {	// rel_date found
 					T new_date(rel_date);
 					new_date += days;
-					Event new_e(new_date, new_event, rel_e);
+					Event new_e(new_date, new_event, rel_e, bday);
 
 					if(!add_event(new_e)) return false;
 
-					rel_e.related.insert( std::pair<T, std::string>(new_date, new_event) );
+					rel_e.related.insert( std::make_pair(new_date, new_event) );
 					return true;
 				}
 			}
 			return false;	// rel_date not found
 		};
 
-		bool add_recurring_events(std::string e, int y=-1, int m = -1, int d = -1, int repeat = 100, interval_t interval = daily) {
-			return recurring_events(e, &Calendar<T>::add_event, y, m, d, repeat, interval);	
+		bool add_yearly_event(const Date& d, std::string e, int r = 100) {
+			return recurring_events(d,e,r, Calendar<T>::yearly);
 		};
 
-		bool remove_recurring_events(std::string e, int y=-1, int m = -1, int d = -1, int repeat = 100, interval_t interval = daily) {
-			return recurring_events(e, &Calendar<T>::remove_event, y, m, d, repeat, interval);
+		bool add_monthly_event(const Date& d, std::string e, int r = 100) {
+			return recurring_events(d,e,r, Calendar<T>::monthly);
 		};
 
-		bool add_birthday(std::string name, int y, int m, int d) {
-			return recurring_events(name, &Calendar<T>::add_event,y, m, d, 50, Calendar<T>::yearly);
+		bool add_weekly_event(const Date& d, std::string e, int r = 100) {
+			return recurring_events(d,e,r, Calendar<T>::weekly);
 		};
 
-		bool recurring_events(std::string e, bool (Calendar<T>::*operation)(const Event&),
-						int y = -1, int m = -1, int d = -1, int repeat = 100, interval_t interval = daily) {
+		bool add_daily_event(const Date& d, std::string e, int r = 100) {
+			return recurring_events(d,e,r, Calendar<T>::monthly);
+		};
+
+		bool add_birthday(const Date& d, std::string n, int r = 50) {
+			return recurring_events(d,n,r,Calendar<T>::yearly, true);
+		};
+
+		bool recurring_events(const Date& d, std::string s, int r, interval_t interval, bool bday=false) {
 			try {
-				T date_ = set_default_date(d,m,y);
-			
-				for(int i = 0; i < repeat; ++i) {
+				if( !add_event( Event(d, s, bday) )) return false;
+
+				T date(d);
+				bool status = true;
+				for(int i = 0; i < r; ++i) {
 					switch (interval) {
 						case daily:
-							++date_;
+							++date;
 							break;
 						case weekly:
-							date_ += date_.days_per_week();
+							date += date.days_per_week();
 							break;
 						case monthly:
-							date_.add_month();
+							date.add_month();
 							break;
 						case yearly:
-							date_.add_year();
+							date.add_year();
 							break;
 					}
-					(*this.*operation)( Event(date_, e) );
+					if( !add_related_event(d, d - date, s, s, bday) )
+						status = false; 
 				}
+				return status;
 			} catch(std::out_of_range) {
 				return false;
 			}
-			return true;
 		};
-
-
-		bool calculate_age(std::string name) const {
-			const_iterator_t it, end;
-
-			end = b_days.end();
-			for(it = b_days.begin(); it != end; it++) {
-				if(it->second.name == name) {
-					int y = date.year() - (it->first).year();
-					int m = date.month() - (it->first).month();
-					int d = date.day() - (it->first).day();
-					// this is not a very generic solution ... if it is leap year this should not be exe.
-					if( date.month() == 2 && (it->first).days_this_month() == 29 
-							&& d == 0) {
-						d += 1;	
-					}
-					if(d < 0) {
-						m--;
-						d += date.days_this_month();
-							
-					}
-					if(m < 0) {
-						y--;
-						m += date.months_per_year();
-					}
-					std::cout << "Age of " << name << " is " << y << " years, " << m << " months and " << d << " days" << std::endl;
-					return true;
-				}
-			}
-			return false;
-		}
 
 		/***********************
 		*** Extrauppgift 2.2 ***
