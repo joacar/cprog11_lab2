@@ -1,3 +1,0 @@
-#!/bin/bash
-
-kattis cprog09lab22a.cpp {date,westerndate,gregorian,julian,kattistime}.{cpp,h} -p oldkattis:cprog09lab22a
