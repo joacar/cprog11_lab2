@@ -74,9 +74,9 @@ int main() {
 	std::cout << "----------------------------------------" << std::endl;
 
 	Gregorian tmr; ++tmr;
-	if(related.move_event(tday, tmr, "Today")) {
-		std::cout << "related.move_event(Gregorian(), ++Gregorian(), \"Today\")" << std::endl;
-	}
+	//if(related.move_event(tday, tmr, "Today")) {
+	//	std::cout << "related.move_event(Gregorian(), ++Gregorian(), \"Today\")" << std::endl;
+	//}
 	std::cout << "----------------------------------------" << std::endl;
 	std::cout << related;
 	std::cout << "-----------Test move_event()------------" << std::endl;
@@ -88,18 +88,27 @@ int main() {
 	std::cout << "recurring_cal.add_yearly_event(Gregorian(2011,12,24), \"Christmas\", 4)" << std::endl;
 	recurring_cal.add_yearly_event(Gregorian(2011,12,24), "Christmas", 4);
 	std::cout << "recurring_cal.add_weekly(Gregorian(), \"Lab presentation\")" << std::endl;
-	recurring_cal.add_weekly_event(Gregorian(), "Lab presentation");
+	recurring_cal.add_weekly_event(Gregorian(), "Lab presentation", 5);
 	std::cout << "----------------------------------------" << std::endl;
 	std::cout << recurring_cal;
 	std::cout << "----------------------------------------" << std::endl;
-	std::cout << "recurring_cal.remove_event(\"Christmas\", 2011,12,24)" << std::endl;
-	recurring_cal.remove_event("Christmas", 2011,12,24);
+	if(recurring_cal.remove_event("Christmas", 24, 12, 2011)) {
+		std::cout << "recurring_cal.remove_event(\"Christmas\", 2011,12,24)" << std::endl;
+	}
 	std::cout << "----------------------------------------" << std::endl;
 	std::cout << recurring_cal;
-
-
-	std::cout << std::endl << "--------Test birthdays--------------" << std::endl;
+	recurring_cal.remove_event("Lab presentation");
 	
+	std::cout << std::endl << "--------Test birthdays--------------" << std::endl;
+	recurring_cal.add_birthday(Gregorian(1988, 7, 20), "Joakim", 3);
+	recurring_cal.add_birthday(Gregorian(1988, 12, 16), "Pascal", 3);
+	std::cout << "recurring_cal.add_birthday(Gregorian(1988, 7, 20), \"Joakim\", 10);" << std::endl;
+	std::cout << "recurring_cal.add_birthday(Gregorian(1988, 12, 16), \"Pascal\", 10);" << std::endl;
+	std::cout << "recurring_cal.add_birthday(Gregorian(2012, 2, 29), \"Leap boy\", 13)" << std::endl;
+	recurring_cal.add_birthday(Gregorian(2012, 2, 29), "Leap boy", 9);
+	std::cout << "----------------------------------------" << std::endl;
+	std::cout << recurring_cal;
+
 	std::cout << std::endl << "\t**** Extrauppgift 2.2 ****" << std::endl;
 	cal.set_date(2000,12,2);
 
