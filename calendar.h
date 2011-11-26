@@ -166,9 +166,8 @@ class Calendar {
 								break;
 							}
 						} 
-					}	
-				}
-				typename std::set<std::pair<T, std::string> >::iterator rel_e = event.related.begin();
+					}
+					typename std::set<std::pair<T, std::string> >::iterator rel_e = event.related.begin();
 				for(; rel_e != event.related.end(); ++rel_e) {
 					T new_date(rel_e->first);
 					new_date += diff;
@@ -184,7 +183,9 @@ class Calendar {
 
 				}
 
-				return true;
+				return true;	
+				}
+				// old location
 			}
 			return false;
 		}
