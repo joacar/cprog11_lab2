@@ -22,9 +22,10 @@ class Calendar {
 			std::set< std::pair<T, std::string> > related;
 			bool is_birthday, is_child;
 			std::pair<T, std::string> parent;
+			const Event* parent_ptr;
 
 			Event(T d, std::string n, bool b_day = false) :
-				date(d), name(n), related(), is_birthday(b_day), is_child(false), parent() {};
+				date(d), name(n), related(), is_birthday(b_day), is_child(false), parent(), parent_ptr() {};
 			
 			Event(T d, std::string n, const Event& rel, bool b_day = false) :
 				date(d), 
@@ -32,14 +33,15 @@ class Calendar {
 				related(), 
 				is_birthday(b_day),
 				is_child(true),
-				parent(std::make_pair<T, std::string>(rel.date,rel.name)) {};
+				parent(std::make_pair<T, std::string>(rel.date,rel.name)),
+				parent_ptr(&rel) {};
 
 			friend std::ostream& operator<<(std::ostream& os, const Event& e) {
 				os << e.name; // os << e.date << " : " << e.name;
 
 				if(e.is_birthday) {
 					int year = e.date.year()  - e.parent.first.year();
-					os << " is " << year << "year(s) old";
+					if(year > 0) os << " is " << year << " year(s) old";
 				}
 
 				// if(e.is_child)
@@ -66,7 +68,7 @@ class Calendar {
 
 		bool add_event(const Event& e) {
 			iterator_t first = events.lower_bound(e.date), last = events.upper_bound(e.date);
-			for(iterator_t it = first; it != last; it++) {
+			for(iterator_t it = first; it != last; ++it) {
 				if(it->first == e.date && it->second.name == e.name)
 					return false;
 			}
@@ -75,10 +77,10 @@ class Calendar {
 		};
 
 		bool remove_event(const Event& e) {
-			iterator_t it = events.lower_bound(e.date);// last = events.upper_bound(e.date);
-			for(; it != events.end(); ++it) {
+			iterator_t it = events.lower_bound(e.date), last = events.upper_bound(e.date);
+			for(; it != last; ++it) {
 				Event& event = it->second;
-				if(event.date == e.date && event.name == e.name) {
+				if(event.name == e.name) { // && event.date == e.date -> no need, use of x_bound
 					if(event.is_child)
 						remove_relation(event);
 					
@@ -102,41 +104,90 @@ class Calendar {
 				}
 			}
 		};
+
 		enum interval_t {daily, weekly, monthly, yearly};
-
 		bool recurring_events(const Date& d, std::string s, int r, interval_t interval, bool bday=false) {
-			try {
-				if( !add_event( Event(d, s, bday) )) return false;
+			if( !add_event( Event(d, s, bday) )) return false;
 
-				T date(d);
-				bool status = true;
-				if(bday) {
-					int padding_years = this->date.year() - d.year() - 1;
-					date.add_year(padding_years);
-				}
-				for(int i = 0; i < r; ++i) {
-					switch (interval) {
-						case daily:
-							++date;
-							break;
-						case weekly:
-							date += date.days_per_week();
-							break;
-						case monthly:
-							date.add_month();
-							break;
-						case yearly:
-							date.add_year();
-							break;
-					}
-					if( !add_related_event(d, date - d, s, s, bday) )
-						status = false; 
-				}
-				return status;
-			} catch(std::out_of_range) {
-				return false;
+			T date(d);
+			bool status = true;
+			if(bday) {
+				int padding_years = this->date.year() - d.year() - 1;
+				date.add_year(padding_years);
 			}
+			for(int i = 0; i < r; ++i) {
+				switch (interval) {
+					case daily:
+						++date;
+						break;
+					case weekly:
+						date += date.days_per_week();
+						break;
+					case monthly:
+						date.add_month();
+						break;
+					case yearly:
+						date.add_year();
+						break;
+				}
+				if( !add_related_event(d, date - d, s, s, bday) )
+					status = false; 
+			}
+			return status;
 		};
+
+		static const bool DEBUG = false;
+		bool move_event(const Date& from, const Date& to, std::string e, const Date& parent_date, bool update_parent=false) {
+			int diff = to - from;
+			iterator_t it = events.lower_bound(T(from)), second = events.upper_bound(T(from));
+			for(; it != second; ++it) {
+				Event& event = it->second;
+				if(event.name == e) {
+					if(DEBUG) std::cout << "Found event " << event.name << " : " << event.date << std::endl;
+					Event new_event(T(to), event.name);
+					if(!add_event(new_event)) {
+						if(DEBUG) std::cout << "Event already exists at date " << T(to) << std::endl;
+						return false;
+					} else {
+						events.erase(it);
+					}
+					if(event.is_child) {
+						Event parent = *event.parent_ptr;
+						if(DEBUG) std::cout << event.name << " is a child of " << parent.name << std::endl;
+						typename std::set<std::pair<T, std::string> >::iterator rel_it, rel_sec;
+						rel_it = parent.related.begin(); //lower_bound(event.date);
+						typename std::pair<T, std::string> tmp;
+						for(; rel_it != parent.related.end(); ++rel_it) {
+							if(event.name == rel_it->second) {
+								tmp = *rel_it;
+								parent.related.erase(rel_it);
+								tmp.first = T(to);
+								parent.related.insert(std::make_pair(tmp.first, tmp.second));
+								break;
+							}
+						} 
+					}	
+				}
+				typename std::set<std::pair<T, std::string> >::iterator rel_e = event.related.begin();
+				for(; rel_e != event.related.end(); ++rel_e) {
+					T new_date(rel_e->first);
+					new_date += diff;
+					if(DEBUG) std::cout << "\t** move_event(" << T(rel_e->first) << ", "<< new_date << ", " << rel_e->second << ", " << T(to) << ")" << std::endl;
+					move_event(rel_e->first, new_date, rel_e->second, to, true);
+					if(DEBUG) std::cout << "\t**" << std::endl;
+				}
+
+				if(update_parent) {
+					Event new_parent(T(to), event.parent.second);
+					event.parent_ptr = &new_parent;
+					event.parent.first = parent_date;
+
+				}
+
+				return true;
+			}
+			return false;
+		}
 
 		struct PrintListObject {
 			void operator()(std::pair<T, Event> pair) const {
@@ -144,7 +195,6 @@ class Calendar {
 			};
 		} print_list;
 		
-
 		void print_list_format() const {
 			for_each(events.lower_bound(date), events.end(), print_list);
 		};
@@ -215,20 +265,20 @@ class Calendar {
 		enum format {list, cal, iCalendar};
 		
 		T date;
-		std::multimap<T, Calendar<T>::Event> events, b_days;
+		std::multimap<T, Calendar<T>::Event> events;
 		format print_format;
 
-		Calendar() : date(), events(), b_days(), print_format(list) {};
+		Calendar() : date(), events(), print_format(list) {};
 		
 		template<class U> Calendar(const Calendar<U>& cal) : 
 			date(cal.date), 
 			events(), 
-			b_days(),
-			print_format(list) // TODO -> cant assigne const <U> cal format
-			{
-				typename std::multimap<U, Event>::const_iterator it;
-				//for(it = cal.events.begin(); it != cal.events.end(); it++)
-				//	events.insert( std::pair<U, Event>(it->first, it->second) );
+			print_format(list) // TODO -> cant assigne if U != T
+		{
+			// TODO
+			typename std::multimap<U, Event>::iterator it;
+			//for(it = cal.events.begin(); it != cal.events.end(); ++it)
+			//	events.insert( std::make_pair<T, Event>(it->first, it->second) );
 		};
 
 		~Calendar() {};
@@ -237,11 +287,10 @@ class Calendar {
 			date = rhs.date;
 			events.clear();
 			print_format = rhs.print_format;
-			b_days.clear();
 
 			typename std::multimap<U, Event>::const_iterator it;
-			for(it = rhs.events.begin(); it != rhs.events.end(); it++)
-				events.insert( std::pair<U, Event>(it->first, it->second) );
+			for(it = rhs.events.begin(); it != rhs.events.end(); ++it)
+				events.insert( std::make_pair(it->first, it->second) );
 			return *this;
 		};
 
@@ -291,8 +340,7 @@ class Calendar {
 			return move_event(from, to, event, date, false);
 		}
 
-		bool add_related_event(const Date& rel_date, int days, std::string rel_event, std::string new_event,
-								bool bday = false) {
+		bool add_related_event(const Date& rel_date, int days, std::string rel_event, std::string new_event, bool bday = false) {
 			iterator_t first = events.lower_bound(rel_date), end = events.upper_bound(rel_date);
 			for(; first != end; first++) {
 				Event& rel_e = first->second;
