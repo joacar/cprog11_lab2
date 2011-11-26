@@ -74,9 +74,9 @@ int main() {
 	std::cout << "----------------------------------------" << std::endl;
 
 	Gregorian tmr; ++tmr;
-	//if(related.move_event(tday, tmr, "Today")) {
-	//	std::cout << "related.move_event(Gregorian(), ++Gregorian(), \"Today\")" << std::endl;
-	//}
+	if(related.move_event(tday, tmr, "Today")) {
+		std::cout << "related.move_event(Gregorian(), ++Gregorian(), \"Today\")" << std::endl;
+	}
 	std::cout << "----------------------------------------" << std::endl;
 	std::cout << related;
 	std::cout << "-----------Test move_event()------------" << std::endl;
