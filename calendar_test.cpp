@@ -80,7 +80,28 @@ int main() {
 	std::cout << "----------------------------------------" << std::endl;
 	std::cout << related;
 	std::cout << "-----------Test move_event()------------" << std::endl;
-
+	Calendar<Gregorian> move_events;
+	move_events.add_event("Test one", 24, 12, 2011);
+	move_events.add_event("Test one", 25, 12, 2011);
+	std::cout << "move_events.add_event(\"Test one\", 24, 12, 2011);" << std::endl;
+	std::cout << "move_events.add_event(\"Test one\", 25, 12, 2011);" << std::endl;
+	std::cout << "----------------------------------------" << std::endl;
+	std::cout << move_events;
+	if(!move_events.move_event(Gregorian(2011,12,24), Gregorian(2011,12,25), "Test one")) {
+		std::cout << "move_events.move_event(Gregorian(2011,12,24), Gregorian(2011,12,25), \"Test one\")" << std::endl;
+		std::cout << "failed since event exists on date to move to" << std::endl;
+	}
+	std::cout << "----------------------------------------" << std::endl;
+	if(!move_events.move_event(Gregorian(2011,12,24), Gregorian(2011,12,25), "Test two")) {
+		std::cout << "move_events.move_event(Gregorian(2011,12,24), Gregorian(2011,12,25), \"Test two\")";
+		std::cout << std::endl << "failed since event does not exists " << std::endl;
+	}
+	std::cout << "----------------------------------------" << std::endl;
+	if(move_events.move_event(Gregorian(2011,12,24), Gregorian(2011,12,31), "Test one")) {
+		std::cout << "move_event(Gregorian(2011,12,24), Gregorian(2011,12,31), \"Test one\")" << std::endl;
+	}
+	std::cout << "----------------------------------------" << std::endl;
+	std::cout << move_events;
 
 	cal.set_format(Calendar<Gregorian>::list);
 	std::cout << std::endl << "-------Test reccuring events------------" << std::endl;
