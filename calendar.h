@@ -43,12 +43,6 @@ class Calendar {
 					int year = e.date.year()  - e.parent.first.year();
 					if(year > 0) os << " is " << year << " year(s) old";
 				}
-
-				// if(e.is_child)
-				// 	os << " has parent " << e.parent.first << " : " << e.parent.second; 
-				// if(e.related.size() > 0)
-				// 	os << " has " << e.related.size() << " related event(s)";
-
 				return os;
 			};		
 		};
@@ -168,24 +162,20 @@ class Calendar {
 						} 
 					}
 					typename std::set<std::pair<T, std::string> >::iterator rel_e = event.related.begin();
-				for(; rel_e != event.related.end(); ++rel_e) {
-					T new_date(rel_e->first);
-					new_date += diff;
-					if(DEBUG) std::cout << "\t** move_event(" << T(rel_e->first) << ", "<< new_date << ", " << rel_e->second << ", " << T(to) << ")" << std::endl;
-					move_event(rel_e->first, new_date, rel_e->second, to, true);
-					if(DEBUG) std::cout << "\t**" << std::endl;
+					for(; rel_e != event.related.end(); ++rel_e) {
+						T new_date(rel_e->first);
+						new_date += diff;
+						if(DEBUG) std::cout << "\t** move_event(" << T(rel_e->first) << ", "<< new_date << ", " << rel_e->second << ", " << T(to) << ")" << std::endl;
+						move_event(rel_e->first, new_date, rel_e->second, to, true);
+						if(DEBUG) std::cout << "\t**" << std::endl;
+					}
+					if(update_parent) {
+						Event new_parent(T(to), event.parent.second);
+						event.parent_ptr = &new_parent;
+						event.parent.first = parent_date;
+					}
+					return true;					
 				}
-
-				if(update_parent) {
-					Event new_parent(T(to), event.parent.second);
-					event.parent_ptr = &new_parent;
-					event.parent.first = parent_date;
-
-				}
-
-				return true;	
-				}
-				// old location
 			}
 			return false;
 		}
@@ -274,12 +264,11 @@ class Calendar {
 		template<class U> Calendar(const Calendar<U>& cal) : 
 			date(cal.date), 
 			events(), 
-			print_format(list) // TODO -> cant assigne if U != T
+			print_format(cal.print_format)
 		{
-			// TODO
-			typename std::multimap<U, Event>::iterator it;
-			//for(it = cal.events.begin(); it != cal.events.end(); ++it)
-			//	events.insert( std::make_pair<T, Event>(it->first, it->second) );
+			typename std::multimap<U, Event>::const_iterator it;
+			for(it = cal.events.begin(); it != cal.events.end(); ++it)
+				events.insert( std::make_pair<T, Event>(it->first, it->second) );
 		};
 
 		~Calendar() {};
