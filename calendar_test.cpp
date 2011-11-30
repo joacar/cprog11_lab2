@@ -42,17 +42,17 @@ int main() {
 	std::cout << "----------------------------------------" << std::endl;
 	std::cout << cal;
 	std::cout << std::endl << "---------Test copy constructor----------" << std::endl;
-	Calendar<Julian> jul_cal;
-	jul_cal.add_event("Hacking the db");
-	jul_cal.add_event("Basketträning");
-	jul_cal.add_event("Gymnastik");
-	Calendar<Gregorian> greg_cal(jul_cal);
+	Calendar<Gregorian> gregorian_cal;
+	gregorian_cal.add_event("Hacking the db");
+	gregorian_cal.add_event("Basketträning");
+	gregorian_cal.add_event("Gymnastik");
+	Calendar<Gregorian> greg_cal(gregorian_cal);
 
-	std::cout << "Calendar<Julian> jul_cal;" << std::endl;
+	std::cout << "Calendar<Gregorian> gregorian_cal;" << std::endl;
 	std::cout << "jul_cal.add_event(\"Hacking the db\");" << std::endl;
 	std::cout << "jul_cal.add_event(\"Basketträning\");;" << std::endl;
 	std::cout << "jul_cal.add_event(\"Gymnastik\");" << std::endl;
-	std::cout << "Calendar<Gregorian> greg_cal(jul_cal);" << std::endl;
+	std::cout << "Calendar<Gregorian> greg_cal(gegorian_cal);" << std::endl;
 	std::cout << "----------------------------------------" << std::endl;
 	std::cout << greg_cal;
 	
